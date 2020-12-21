@@ -2,6 +2,7 @@ package ch.fdlo.hoerbuchspion.webservice.data
 
 import javax.persistence.Embedded
 import ch.fdlo.hoerbuchspion.webservice.data.ArtistDetails
+import com.fasterxml.jackson.annotation.JsonUnwrapped
 import javax.persistence.Entity
 import javax.persistence.Id
 import javax.persistence.Table
@@ -15,6 +16,7 @@ private constructor() {  // We need a default constructor because of JPA
     val name: String? = null
 
     @Embedded // effectively a OneToOne relation
+    @JsonUnwrapped
     var artistDetails: ArtistDetails? = null
 
     override fun equals(obj: Any?): Boolean {

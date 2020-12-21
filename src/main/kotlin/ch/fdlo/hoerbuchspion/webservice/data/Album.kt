@@ -1,5 +1,6 @@
 package ch.fdlo.hoerbuchspion.webservice.data
 
+import com.fasterxml.jackson.annotation.JsonUnwrapped
 import javax.persistence.*
 
 @Entity(name = "Album")
@@ -10,7 +11,7 @@ private constructor() {  // We need a default constructor because of JPA
     val id: String? = null
     val name: String? = null
 
-    @ManyToOne(cascade = [CascadeType.MERGE])
+    @ManyToOne(cascade = [CascadeType.MERGE, CascadeType.PERSIST])
     val artist: Artist? = null
     val releaseDate: String? = null
     val albumArtUrl: String? = null
@@ -18,8 +19,9 @@ private constructor() {  // We need a default constructor because of JPA
     val storyType: StoryType? = null
 
     @Embedded // effectively a OneToOne relation
+    @JsonUnwrapped
     var albumDetails: AlbumDetails? = null
-    
+
     override fun equals(obj: Any?): Boolean {
         return if (obj is Album) {
             id == obj.id
