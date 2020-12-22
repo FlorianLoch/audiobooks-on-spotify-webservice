@@ -5,6 +5,7 @@ tmp/
 
 # IntelliJ specific stuff
 out/
+.idea/libraries/*
 
 # User-specific stuff
 .idea/**/workspace.xml
