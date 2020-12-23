@@ -44,7 +44,7 @@ class QueryBuilder {
             val criteria = searchPredicateBuilder("%$searchString%")
             val count = JPAQuery<Long>(em).from(from).where(criteria).fetchCount()
 
-            val records = if (count > 0)
+            val records = if (count > 0 && offset < count)
                 JPAQuery<T>(em).select(
                     from
                 ).from(from).where(criteria).offset(offset).limit(limit).fetch()

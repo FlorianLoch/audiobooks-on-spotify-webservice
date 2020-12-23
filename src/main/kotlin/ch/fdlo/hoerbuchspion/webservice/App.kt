@@ -14,7 +14,8 @@ class App : Kooby({
 
     install(HikariModule())
 
-    install(HibernateModule())
+    // We need to explicitly state the package, otherwise Hibernate won't be initialized correctly (only when running tests)
+    install(HibernateModule().scan("ch.fdlo.hoerbuchspion.webservice.data"))
 
     install(WhoopsModule())
 
