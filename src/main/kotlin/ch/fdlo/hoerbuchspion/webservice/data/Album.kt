@@ -15,7 +15,11 @@ private constructor() {  // We need a default constructor because of JPA
     val artist: Artist? = null
     val releaseDate: String? = null
     val albumArtUrl: String? = null
+
+    @Enumerated(EnumType.STRING)
     val albumType: AlbumType? = null
+
+    @Enumerated(EnumType.STRING)
     val storyType: StoryType? = null
 
     @Embedded // effectively a OneToOne relation

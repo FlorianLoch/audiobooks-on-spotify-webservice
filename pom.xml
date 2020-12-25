@@ -124,6 +124,9 @@
       <resource>
         <directory>conf</directory>
       </resource>
+      <resource>
+        <directory>src/test/resources</directory>
+      </resource>
     </resources>
     <plugins>
       <plugin>
