@@ -1,5 +1,6 @@
 DB_NAME="JOOBY_H2_TEST_DB"
 
+# Obsolete, we are now running an embedded instance of h2 and therefore do not need to spin up any container.
 integration-test:
 	@# We need no persistence as this is run for testing only. Assigning a random port does not work as it takes
 	@# some until the container is running and before that the port cannot be fetched (a stale one might be fetched, causing issues).
