@@ -1,7 +1,6 @@
 package ch.fdlo.hoerbuchspion.webservice.data
 
 import javax.persistence.Embedded
-import ch.fdlo.hoerbuchspion.webservice.data.ArtistDetails
 import com.fasterxml.jackson.annotation.JsonUnwrapped
 import javax.persistence.Entity
 import javax.persistence.Id
@@ -19,9 +18,9 @@ private constructor() {  // We need a default constructor because of JPA
     @JsonUnwrapped
     var artistDetails: ArtistDetails? = null
 
-    override fun equals(obj: Any?): Boolean {
-        return if (obj is Artist) {
-            id == obj.id
+    override fun equals(other: Any?): Boolean {
+        return if (other is Artist) {
+            id == other.id
         } else false
     }
 

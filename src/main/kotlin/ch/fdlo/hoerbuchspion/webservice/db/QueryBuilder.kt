@@ -14,10 +14,10 @@ import com.querydsl.core.types.EntityPath
 import com.querydsl.core.types.Predicate
 import kotlin.math.min
 
-const val DEFAULT_ROW_LIMIT_PER_REQUEST = 50L
-
 class QueryBuilder {
     companion object {
+        const val DEFAULT_ROW_LIMIT_PER_REQUEST = 50L
+
         fun fetchAlbums(ctx: Context): PaginationWrapper<Album> {
             return fetchFromRequest(ctx, {
                 album.name.likeIgnoreCase(it)

@@ -1,6 +1,7 @@
 package ch.fdlo.hoerbuchspion.webservice
 
 import ch.fdlo.hoerbuchspion.webservice.db.QueryBuilder
+import ch.fdlo.hoerbuchspion.webservice.db.queryCrawlStats
 import io.jooby.Kooby
 import io.jooby.hibernate.HibernateModule
 import io.jooby.hikari.HikariModule
@@ -25,6 +26,10 @@ class App : Kooby({
 
     get("/artists") { it ->
         QueryBuilder.fetchArtists(it)
+    }
+
+    get("/stats") { it ->
+        queryCrawlStats(it)
     }
 })
 

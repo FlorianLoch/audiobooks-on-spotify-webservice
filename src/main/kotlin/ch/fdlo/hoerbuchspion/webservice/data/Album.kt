@@ -26,9 +26,9 @@ private constructor() {  // We need a default constructor because of JPA
     @JsonUnwrapped
     var albumDetails: AlbumDetails? = null
 
-    override fun equals(obj: Any?): Boolean {
-        return if (obj is Album) {
-            id == obj.id
+    override fun equals(other: Any?): Boolean {
+        return if (other is Album) {
+            id == other.id
         } else false
     }
 
