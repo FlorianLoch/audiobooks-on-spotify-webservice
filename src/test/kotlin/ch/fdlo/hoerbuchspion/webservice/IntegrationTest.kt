@@ -14,6 +14,9 @@ import org.junit.jupiter.api.Test
 import java.nio.file.Files
 import java.nio.file.Paths
 import javax.persistence.EntityManager
+import org.hamcrest.MatcherAssert.assertThat
+import org.hamcrest.Matchers.*
+
 
 @JoobyTest(App::class)
 class IntegrationTest {
@@ -62,6 +65,57 @@ class IntegrationTest {
         ).execute().use { rsp ->
             assertEquals(
                 "{\"total\":1,\"offset\":0,\"limit\":50,\"items\":[{\"id\":\"23129390abdc\",\"name\":\"Some Super Fancy Artist\",\"artistImage\":\"http://artist.com/image.png\",\"popularity\":90}]}",
+                rsp.body!!.string()
+            )
+            assertEquals(StatusCode.OK.value(), rsp.code)
+        }
+    }
+
+    @Test
+    fun searchShouldNotBeCaseSensitive(serverPort: Int) {
+        client.newCall(
+            Request.Builder()
+                .url("http://localhost:$serverPort/albums?s=fANCY aLBUM")
+                .build()
+        ).execute().use { rsp ->
+            assertThat(rsp.body!!.string(), startsWith("{\"total\":1,\"offset\":0,\"limit\":50,\"items\":[{\"id\":\"990023ace67a\",\"name\":\"Fancy Album\""))
+            assertEquals(StatusCode.OK.value(), rsp.code)
+        }
+    }
+
+    @Test
+    fun emptySearchQueryResultsInWildcardSearch(serverPort: Int) {
+        client.newCall(
+            Request.Builder()
+                .url("http://localhost:$serverPort/albums?s=")
+                .build()
+        ).execute().use { rsp ->
+            assertThat(rsp.body!!.string(), startsWith("{\"total\":2,\"offset\":0,\"limit\":50,\"items\":[{"))
+            assertEquals(StatusCode.OK.value(), rsp.code)
+        }
+    }
+
+    @Test
+    fun searchTermIsWrappedWithWildcards(serverPort: Int) {
+        client.newCall(
+            Request.Builder()
+                .url("http://localhost:$serverPort/albums?s=cy Al")
+                .build()
+        ).execute().use { rsp ->
+            assertThat(rsp.body!!.string(), startsWith("{\"total\":1,\"offset\":0,\"limit\":50,\"items\":[{\"id\":\"990023ace67a\",\"name\":\"Fancy Album\""))
+            assertEquals(StatusCode.OK.value(), rsp.code)
+        }
+    }
+
+    @Test
+    fun emptyListShouldBeReturnedWhenTermDoesNotMatch(serverPort: Int) {
+        client.newCall(
+            Request.Builder()
+                .url("http://localhost:$serverPort/albums?s=Some Album we do not know about")
+                .build()
+        ).execute().use { rsp ->
+            assertEquals(
+                "{\"total\":0,\"offset\":0,\"limit\":50,\"items\":[]}",
                 rsp.body!!.string()
             )
             assertEquals(StatusCode.OK.value(), rsp.code)
@@ -123,7 +177,10 @@ class IntegrationTest {
                 .url("http://localhost:$serverPort/stats")
                 .build()
         ).execute().use { rsp ->
-            assertEquals("{\"PLAYLISTS_CONSIDERED_COUNT\":\"3\",\"PROFILES_CONSIDERED_COUNT\":\"2\",\"ARTISTS_CONSIDERED_COUNT\":\"1\",\"ALBUMS_FOUND_COUNT\":\"0\"}", rsp.body!!.string())
+            assertEquals(
+                "{\"PLAYLISTS_CONSIDERED_COUNT\":\"3\",\"PROFILES_CONSIDERED_COUNT\":\"2\",\"ARTISTS_CONSIDERED_COUNT\":\"1\",\"ALBUMS_FOUND_COUNT\":\"0\"}",
+                rsp.body!!.string()
+            )
             assertEquals(StatusCode.OK.value(), rsp.code)
         }
     }
