@@ -1,12 +1,20 @@
-# webservice
+# Audiobooks on Spotify
+This is the webservice/frontend component, for the backend see the [crawler's repository](https://github.com/FlorianLoch/audiobooks-on-spotify-crawler).
 
-Welcome to webservice!!
+The component is built with the awesome Jooby microframework, Hibernate, Jackson and QueryDSL.
 
-## running
+## API
+Three routes are available, 
 
-    mvn clean jooby:run
+### Albums a.k.a. audiobooks
+```/albums```
 
-## building
+### Artists a.k.a. authors
+```/artists```
 
-    mvn clean package
+### Crawling metadata
+```/stats```
+
+## Running & building with Maven
+This is a maven-based project, it can be run with ```mvn clean jobby:run``` and build with ```mvn clean package```.
 
