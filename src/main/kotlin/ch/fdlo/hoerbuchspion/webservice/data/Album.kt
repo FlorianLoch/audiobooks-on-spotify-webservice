@@ -47,6 +47,7 @@ private constructor() {  // We need a default constructor because of JPA
             return str
         }
 
+        // TODO: Clean this up
         companion object {
             fun analyze(albumName: String): StoryType {
                 var s = albumName

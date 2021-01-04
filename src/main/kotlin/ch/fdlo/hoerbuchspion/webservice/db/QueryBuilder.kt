@@ -10,6 +10,7 @@ import ch.fdlo.hoerbuchspion.webservice.data.QAlbum.album
 import ch.fdlo.hoerbuchspion.webservice.data.QArtist.artist
 import com.querydsl.core.types.Predicate
 import com.querydsl.core.types.dsl.EntityPathBase
+import java.lang.IllegalArgumentException
 import kotlin.math.min
 
 class QueryBuilder {
@@ -50,22 +51,26 @@ class QueryBuilder {
             from: EntityPathBase<T>
         ): Predicate {
             val searchString = "%${ctx.query("s").value("%").trim()}%"
-            val unabridgedOnly = ctx.query("unabridged_only").booleanValue(false)
 
-            // TODO: Implement filter by language
-
-            when (from) {
+            return when (from) {
                 is QAlbum -> {
-                    val predicate = from.name.likeIgnoreCase(searchString)
+                    val unabridgedOnly = ctx.query("unabridged_only").booleanValue(false)
+                    val languages = toLanguageSet(ctx.query("language").toSet(String::class.java))
+
+                    var predicate = from.name.likeIgnoreCase(searchString)
 
                     if (unabridgedOnly) {
-                        return predicate.and(from.storyType.eq(Album.StoryType.UNABRIDGED))
+                        predicate = predicate.and(from.storyType.eq(Album.StoryType.UNABRIDGED))
                     }
 
-                    return predicate
+                    if (languages.isEmpty().not()) {
+                        predicate = predicate.and(from.albumDetails.assumedLanguage.`in`(languages))
+                    }
+
+                    predicate
                 }
                 is QArtist -> {
-                    return from.name.likeIgnoreCase(searchString)
+                    from.name.likeIgnoreCase(searchString)
                 }
                 else -> {
                     throw Throwable("Entity needs to be of either QAlbum or QArtist.")
@@ -73,6 +78,21 @@ class QueryBuilder {
             }
         }
 
+        private fun toLanguageSet(stringSet: Set<String>): Set<AlbumDetails.Language> {
+            val langSet = mutableSetOf<AlbumDetails.Language>()
+
+            for (langStr in stringSet) {
+                val lang = AlbumDetails.Language.fromISO_639_1(langStr.toLowerCase())
+
+                if (lang == AlbumDetails.Language.UNKNOWN) {
+                    throw IllegalArgumentException("'$langStr' is not an ISO 639-1 identifier or does not denote a supported language.")
+                }
+
+                langSet.add(lang)
+            }
+
+            return langSet
+        }
     }
 }
 

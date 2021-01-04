@@ -20,6 +20,19 @@ private constructor() { // We need a default constructor because of JPA
     var assumedLanguage = Language.UNKNOWN
 
     enum class Language {
-        DE, EN, FR, ES, IT, UNKNOWN
+        DE, EN, FR, ES, IT, UNKNOWN;
+
+        companion object {
+            fun fromISO_639_1(lang: String): Language {
+                return when (lang) {
+                    "de" -> DE
+                    "en" -> EN
+                    "fr" -> FR
+                    "es" -> ES
+                    "it" -> IT
+                    else -> UNKNOWN
+                }
+            }
+        }
     }
 }
