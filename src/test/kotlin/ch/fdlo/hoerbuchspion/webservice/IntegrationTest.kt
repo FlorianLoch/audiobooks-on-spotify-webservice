@@ -123,6 +123,21 @@ class IntegrationTest {
     }
 
     @Test
+    fun shouldOnlyReturnUnabridgedAlbumsWhenAskedTo(serverPort: Int) {
+        client.newCall(
+            Request.Builder()
+                .url("http://localhost:$serverPort/albums?unabridged_only=true")
+                .build()
+        ).execute().use { rsp ->
+            assertEquals(
+                "{\"total\":1,\"offset\":0,\"limit\":50,\"items\":[{\"id\":\"990023ace67a\",\"name\":\"Fancy Album\",\"artist\":{\"id\":\"23129390abdc\",\"name\":\"Some Super Fancy Artist\",\"artistImage\":\"http://artist.com/image.png\",\"popularity\":90},\"releaseDate\":\"2020-08-01\",\"albumArtUrl\":\"http://albumart.de/image1.png\",\"albumType\":\"ALBUM\",\"storyType\":\"UNABRIDGED\",\"totalTracks\":10,\"totalDurationMs\":9078934,\"allTracksNotExplicit\":true,\"allTracksPlayable\":true,\"previewURL\":\"http://previewurl.de/sample.mp3\",\"popularity\":80,\"label\":\"Some Fancy Label\",\"copyright\":\"Copyright owner 1\",\"assumedLanguage\":\"DE\"}]}",
+                rsp.body!!.string()
+            )
+            assertEquals(StatusCode.OK.value(), rsp.code)
+        }
+    }
+
+    @Test
     fun apiShouldSupportPagination(serverPort: Int) {
         client.newCall(
             Request.Builder()
