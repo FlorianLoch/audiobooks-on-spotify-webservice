@@ -15,7 +15,7 @@
     <!-- Startup class -->
     <application.class>ch.fdlo.hoerbuchspion.webservice.AppKt</application.class>
 
-    <jooby.version>2.9.4</jooby.version>
+    <jooby.version>2.9.5</jooby.version>
 
     <kotlin.version>1.4.21</kotlin.version>
     <kotlin.compiler.incremental>true</kotlin.compiler.incremental>
