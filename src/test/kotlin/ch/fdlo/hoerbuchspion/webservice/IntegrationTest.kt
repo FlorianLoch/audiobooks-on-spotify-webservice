@@ -96,6 +96,18 @@ class IntegrationTest {
     }
 
     @Test
+    fun omittedSearchQueryResultsInWildcardSearch(serverPort: Int) {
+        client.newCall(
+            Request.Builder()
+                .url("http://localhost:$serverPort/albums")
+                .build()
+        ).execute().use { rsp ->
+            assertThat(rsp.body!!.string(), startsWith("{\"total\":2,\"offset\":0,\"limit\":50,\"items\":[{"))
+            assertEquals(StatusCode.OK.value(), rsp.code)
+        }
+    }
+
+    @Test
     fun searchTermIsWrappedWithWildcards(serverPort: Int) {
         client.newCall(
             Request.Builder()
