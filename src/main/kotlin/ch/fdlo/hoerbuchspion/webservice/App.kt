@@ -8,9 +8,16 @@ import io.jooby.hikari.HikariModule
 import io.jooby.json.JacksonModule
 import io.jooby.runApp
 import io.jooby.whoops.WhoopsModule
+import io.jooby.OpenAPIModule
+
+
+
 
 
 class App : Kooby({
+    // The implicit route "/swagger/" provides OpenAPI documentation
+    install(OpenAPIModule())
+
     install(JacksonModule())
 
     install(HikariModule())
