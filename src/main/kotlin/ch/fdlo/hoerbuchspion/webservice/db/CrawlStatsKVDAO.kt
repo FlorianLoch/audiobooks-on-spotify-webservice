@@ -6,8 +6,7 @@ import com.querydsl.jpa.impl.JPAQuery
 import io.jooby.Context
 import javax.persistence.EntityManager
 
-fun queryCrawlStats(ctx: Context) : MutableMap<CrawlStatsKV.KVKey, String> {
-    val em = ctx.require(EntityManager::class.java)
+fun queryCrawlStats(em: EntityManager) : MutableMap<CrawlStatsKV.KVKey, String> {
     val map = mutableMapOf<CrawlStatsKV.KVKey, String>()
 
     JPAQuery<CrawlStatsKV>(em).from(QCrawlStatsKV.crawlStatsKV).fetch().forEach() {

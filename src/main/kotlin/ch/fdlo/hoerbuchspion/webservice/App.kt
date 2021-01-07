@@ -1,9 +1,6 @@
 package ch.fdlo.hoerbuchspion.webservice
 
-import ch.fdlo.hoerbuchspion.webservice.data.Album
-import ch.fdlo.hoerbuchspion.webservice.data.AlbumDetails
-import ch.fdlo.hoerbuchspion.webservice.data.Artist
-import ch.fdlo.hoerbuchspion.webservice.data.PaginationWrapper
+import ch.fdlo.hoerbuchspion.webservice.data.*
 import ch.fdlo.hoerbuchspion.webservice.db.QueryBuilder
 import ch.fdlo.hoerbuchspion.webservice.db.queryCrawlStats
 import io.jooby.Context
@@ -22,6 +19,8 @@ import io.swagger.v3.oas.annotations.enums.ParameterIn
 import io.swagger.v3.oas.annotations.info.Contact
 import io.swagger.v3.oas.annotations.info.Info
 import io.swagger.v3.oas.annotations.info.License
+import io.swagger.v3.oas.annotations.media.Content
+import io.swagger.v3.oas.annotations.media.ExampleObject
 import io.swagger.v3.oas.annotations.media.Schema
 import io.swagger.v3.oas.annotations.responses.ApiResponse
 import java.lang.IllegalArgumentException
@@ -52,9 +51,7 @@ class App : Kooby({
 
     get("/artists", ::getArtists)
 
-    get("/stats") { it ->
-        queryCrawlStats(it)
-    }
+    get("/stats", ::getStats)
 })
 
 @Operation(
@@ -63,15 +60,25 @@ class App : Kooby({
     responses = [
         ApiResponse(
             responseCode = "400",
-            description = "{\n" +
-                    "  \"message\": \"Error description\",\n" +
-                    "  \"status\": 400,\n" +
-                    "  \"reason\": \"Some details on the error.\"\n" +
-                    "}"
+            content = [Content(
+                mediaType = "application/json",
+                examples = [ExampleObject(
+                    value = "{\n" +
+                            "  \"message\": \"Error description\",\n" +
+                            "  \"status\": 400,\n" +
+                            "  \"reason\": \"Some details on the error.\"\n" +
+                            "}"
+                )]
+            )]
         ),
         ApiResponse(
             responseCode = "default",
-            description = "{\"total\":1,\"offset\":0,\"limit\":50,\"items\":[{\"id\":\"990023ace67a\",\"name\":\"Fancy Album\",\"artist\":{\"id\":\"23129390abdc\",\"name\":\"Some Super Fancy Artist\",\"artistImage\":\"http://artist.com/image.png\",\"popularity\":90},\"releaseDate\":\"2020-08-01\",\"albumArtUrl\":\"http://albumart.de/image1.png\",\"albumType\":\"ALBUM\",\"storyType\":\"UNABRIDGED\",\"totalTracks\":10,\"totalDurationMs\":9078934,\"allTracksNotExplicit\":true,\"allTracksPlayable\":true,\"previewURL\":\"http://previewurl.de/sample.mp3\",\"popularity\":80,\"label\":\"Some Fancy Label\",\"copyright\":\"Copyright owner 1\",\"assumedLanguage\":\"DE\"}]}"
+            content = [Content(
+                mediaType = "application/json",
+                examples = [ExampleObject(
+                    value = "{\"total\":1,\"offset\":0,\"limit\":50,\"items\":[{\"id\":\"990023ace67a\",\"name\":\"Fancy Album\",\"artist\":{\"id\":\"23129390abdc\",\"name\":\"Some Super Fancy Artist\",\"artistImage\":\"http://artist.com/image.png\",\"popularity\":90},\"releaseDate\":\"2020-08-01\",\"albumArtUrl\":\"http://albumart.de/image1.png\",\"albumType\":\"ALBUM\",\"storyType\":\"UNABRIDGED\",\"totalTracks\":10,\"totalDurationMs\":9078934,\"allTracksNotExplicit\":true,\"allTracksPlayable\":true,\"previewURL\":\"http://previewurl.de/sample.mp3\",\"popularity\":80,\"label\":\"Some Fancy Label\",\"copyright\":\"Copyright owner 1\",\"assumedLanguage\":\"DE\"}]}"
+                )]
+            )]
         )],
     parameters = [
         Parameter(
@@ -123,8 +130,7 @@ class App : Kooby({
             `in` = ParameterIn.QUERY,
             required = false,
             schema = Schema(
-                type = "string",
-                allowableValues = ["de", "en", "fr", "es", "it"]
+                implementation = AlbumDetails.Language::class
             )
         )]
 )
@@ -148,6 +154,54 @@ fun getAlbums(ctx: Context): PaginationWrapper<Album> {
     return QueryBuilder.fetchAlbums(em, offset, limit, searchTerm, unabridgedOnly, languages)
 }
 
+@Operation(
+    summary = "Provides artists/authors matching given filters. Information is wrapped inside a PaginationWrapper object.",
+    method = "GET",
+    responses = [
+        ApiResponse(
+            responseCode = "default",
+            content = [Content(
+                    mediaType = "application/json",
+                    examples = [ExampleObject(
+                        value = "{\"total\":1,\"offset\":0,\"limit\":50,\"items\":[{\"id\":\"23129390abdc\",\"name\":\"Some Super Fancy Artist\",\"artistImage\":\"http://artist.com/image.png\",\"popularity\":90}]}"
+                    )]
+                )]
+        )],
+    parameters = [
+        Parameter(
+            name = "offset",
+            description = "Required for pagination. Position from which to start returning records.",
+            `in` = ParameterIn.QUERY,
+            required = false,
+            schema = Schema(
+                defaultValue = "0",
+                type = "integer",
+                minimum = "0"
+            )
+        ),
+        Parameter(
+            name = "limit",
+            description = "Required for pagination. Number of records to return starting from 'offset'.",
+            `in` = ParameterIn.QUERY,
+            required = false,
+            schema = Schema(
+                defaultValue = QueryBuilder.DEFAULT_ROW_LIMIT_PER_REQUEST.toString(),
+                type = "integer",
+                minimum = QueryBuilder.MIN_ROWS_REQUIRED_TO_BE_REQUESTED.toString(),
+                maximum = QueryBuilder.DEFAULT_ROW_LIMIT_PER_REQUEST.toString()
+            )
+        ),
+        Parameter(
+            name = "s",
+            description = "Search term records need to match.",
+            `in` = ParameterIn.QUERY,
+            required = false,
+            schema = Schema(
+                defaultValue = "%",
+                type = "string"
+            )
+        )]
+)
 fun getArtists(ctx: Context): PaginationWrapper<Artist> {
     val offset = ctx.query("offset").longValue(0)
     val limit = ctx.query("limit").longValue(QueryBuilder.DEFAULT_ROW_LIMIT_PER_REQUEST)
@@ -155,6 +209,26 @@ fun getArtists(ctx: Context): PaginationWrapper<Artist> {
     val em = ctx.require(EntityManager::class.java)
 
     return QueryBuilder.fetchArtists(em, offset, limit, searchTerm)
+}
+
+@Operation(
+    summary = "Provides some statistical values about the last run of the crawler.",
+    method = "GET",
+    responses = [
+        ApiResponse(
+            responseCode = "default",
+            content = [Content(
+                mediaType = "application/json",
+                examples = [ExampleObject(
+                    value = "{\"PLAYLISTS_CONSIDERED_COUNT\":\"3\",\"PROFILES_CONSIDERED_COUNT\":\"2\",\"ARTISTS_CONSIDERED_COUNT\":\"1\",\"ALBUMS_FOUND_COUNT\":\"0\"}"
+                )]
+            )]
+        )]
+)
+fun getStats(ctx: Context): MutableMap<CrawlStatsKV.KVKey, String> {
+    val em = ctx.require(EntityManager::class.java)
+
+    return queryCrawlStats(em)
 }
 
 fun main(args: Array<String>) {
