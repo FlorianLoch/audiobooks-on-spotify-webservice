@@ -2,7 +2,6 @@ package ch.fdlo.hoerbuchspion.webservice.db
 
 import ch.fdlo.hoerbuchspion.webservice.data.*
 import com.querydsl.jpa.impl.JPAQuery
-import io.jooby.Context
 import javax.persistence.EntityManager
 
 import ch.fdlo.hoerbuchspion.webservice.data.QAlbum.album
@@ -10,6 +9,7 @@ import ch.fdlo.hoerbuchspion.webservice.data.QArtist.artist
 import com.querydsl.core.types.Predicate
 import com.querydsl.core.types.dsl.BooleanExpression
 import com.querydsl.core.types.dsl.EntityPathBase
+import com.querydsl.core.types.dsl.NumberPath
 import com.querydsl.core.types.dsl.StringPath
 import java.lang.IllegalArgumentException
 import kotlin.math.min
@@ -37,7 +37,7 @@ class QueryBuilder {
                 criteria = criteria.and(album.albumDetails.assumedLanguage.`in`(languages))
             }
 
-            return fetchFromRequest(em, album, criteria, offset, limit)
+            return fetchFromRequest(em, album, criteria, album.albumDetails.popularity, offset, limit)
         }
 
         fun fetchArtists(
@@ -48,13 +48,14 @@ class QueryBuilder {
         ): PaginationWrapper<Artist> {
             val criteria = buildSearchTermPredicate(artist.name, searchTerm)
 
-            return fetchFromRequest(em, artist, criteria, offset, limit)
+            return fetchFromRequest(em, artist, criteria, artist.artistDetails.popularity, offset, limit)
         }
 
         private fun <T> fetchFromRequest(
             em: EntityManager,
             from: EntityPathBase<T>,
             criteria: Predicate,
+            orderBy: NumberPath<Int>,
             offset: Long,
             limit: Long
         ): PaginationWrapper<T> {
@@ -65,7 +66,7 @@ class QueryBuilder {
             val records = if (count > 0 && offset < count)
                 JPAQuery<T>(em).select(
                     from
-                ).from(from).where(criteria).offset(offset).limit(limit).fetch()
+                ).from(from).where(criteria).offset(offset).limit(limit).orderBy(orderBy.desc()).fetch()
             else mutableListOf()
 
             return PaginationWrapper(count, offset, limit, records)

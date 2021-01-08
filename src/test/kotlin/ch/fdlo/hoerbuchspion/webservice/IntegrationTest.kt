@@ -42,14 +42,14 @@ class IntegrationTest {
     }
 
     @Test
-    fun shouldProvideAlbumsViaRESTAPI(serverPort: Int) {
+    fun shouldProvideAlbumsViaRESTAPIInDescendingOrderByPopularity(serverPort: Int) {
         client.newCall(
             Request.Builder()
                 .url("http://localhost:$serverPort/albums")
                 .build()
         ).execute().use { rsp ->
             assertEquals(
-                "{\"total\":2,\"offset\":0,\"limit\":50,\"items\":[{\"id\":\"990023ace67a\",\"name\":\"Fancy Album\",\"artist\":{\"id\":\"23129390abdc\",\"name\":\"Some Super Fancy Artist\",\"artistImage\":\"http://artist.com/image.png\",\"popularity\":90},\"releaseDate\":\"2020-08-01\",\"albumArtUrl\":\"http://albumart.de/image1.png\",\"albumType\":\"ALBUM\",\"storyType\":\"UNABRIDGED\",\"totalTracks\":10,\"totalDurationMs\":9078934,\"allTracksNotExplicit\":true,\"allTracksPlayable\":true,\"previewURL\":\"http://previewurl.de/sample.mp3\",\"popularity\":80,\"label\":\"Some Fancy Label\",\"copyright\":\"Copyright owner 1\",\"assumedLanguage\":\"DE\"},{\"id\":\"2847a676de8b\",\"name\":\"Super Album\",\"artist\":{\"id\":\"23129390abdc\",\"name\":\"Some Super Fancy Artist\",\"artistImage\":\"http://artist.com/image.png\",\"popularity\":90},\"releaseDate\":\"1992-08-03\",\"albumArtUrl\":\"http://albumart.de/image2.png\",\"albumType\":\"COMPILATION\",\"storyType\":\"ABRIDGED\",\"totalTracks\":10,\"totalDurationMs\":9078934,\"allTracksNotExplicit\":true,\"allTracksPlayable\":true,\"previewURL\":\"http://previewurl.de/sample.mp3\",\"popularity\":80,\"label\":\"Some Fancy Label\",\"copyright\":\"Copyright owner 2\",\"assumedLanguage\":\"EN\"}]}",
+                "{\"total\":2,\"offset\":0,\"limit\":50,\"items\":[{\"id\":\"2847a676de8b\",\"name\":\"Super Album\",\"artist\":{\"id\":\"23129390abdc\",\"name\":\"Some Super Fancy Artist\",\"artistImage\":\"http://artist.com/image.png\",\"popularity\":90},\"releaseDate\":\"1992-08-03\",\"albumArtUrl\":\"http://albumart.de/image2.png\",\"albumType\":\"COMPILATION\",\"storyType\":\"ABRIDGED\",\"totalTracks\":10,\"totalDurationMs\":9078934,\"allTracksNotExplicit\":true,\"allTracksPlayable\":true,\"previewURL\":\"http://previewurl.de/sample.mp3\",\"popularity\":80,\"label\":\"Some Fancy Label\",\"copyright\":\"Copyright owner 2\",\"assumedLanguage\":\"EN\"},{\"id\":\"990023ace67a\",\"name\":\"Fancy Album\",\"artist\":{\"id\":\"23129390abdc\",\"name\":\"Some Super Fancy Artist\",\"artistImage\":\"http://artist.com/image.png\",\"popularity\":90},\"releaseDate\":\"2020-08-01\",\"albumArtUrl\":\"http://albumart.de/image1.png\",\"albumType\":\"ALBUM\",\"storyType\":\"UNABRIDGED\",\"totalTracks\":10,\"totalDurationMs\":9078934,\"allTracksNotExplicit\":true,\"allTracksPlayable\":true,\"previewURL\":\"http://previewurl.de/sample.mp3\",\"popularity\":60,\"label\":\"Some Fancy Label\",\"copyright\":\"Copyright owner 1\",\"assumedLanguage\":\"DE\"}]}",
                 rsp.body!!.string()
             )
             assertEquals(StatusCode.OK.value(), rsp.code)
@@ -142,7 +142,7 @@ class IntegrationTest {
                 .build()
         ).execute().use { rsp ->
             assertEquals(
-                "{\"total\":1,\"offset\":0,\"limit\":50,\"items\":[{\"id\":\"990023ace67a\",\"name\":\"Fancy Album\",\"artist\":{\"id\":\"23129390abdc\",\"name\":\"Some Super Fancy Artist\",\"artistImage\":\"http://artist.com/image.png\",\"popularity\":90},\"releaseDate\":\"2020-08-01\",\"albumArtUrl\":\"http://albumart.de/image1.png\",\"albumType\":\"ALBUM\",\"storyType\":\"UNABRIDGED\",\"totalTracks\":10,\"totalDurationMs\":9078934,\"allTracksNotExplicit\":true,\"allTracksPlayable\":true,\"previewURL\":\"http://previewurl.de/sample.mp3\",\"popularity\":80,\"label\":\"Some Fancy Label\",\"copyright\":\"Copyright owner 1\",\"assumedLanguage\":\"DE\"}]}",
+                "{\"total\":1,\"offset\":0,\"limit\":50,\"items\":[{\"id\":\"990023ace67a\",\"name\":\"Fancy Album\",\"artist\":{\"id\":\"23129390abdc\",\"name\":\"Some Super Fancy Artist\",\"artistImage\":\"http://artist.com/image.png\",\"popularity\":90},\"releaseDate\":\"2020-08-01\",\"albumArtUrl\":\"http://albumart.de/image1.png\",\"albumType\":\"ALBUM\",\"storyType\":\"UNABRIDGED\",\"totalTracks\":10,\"totalDurationMs\":9078934,\"allTracksNotExplicit\":true,\"allTracksPlayable\":true,\"previewURL\":\"http://previewurl.de/sample.mp3\",\"popularity\":60,\"label\":\"Some Fancy Label\",\"copyright\":\"Copyright owner 1\",\"assumedLanguage\":\"DE\"}]}",
                 rsp.body!!.string()
             )
             assertEquals(StatusCode.OK.value(), rsp.code)
@@ -157,7 +157,7 @@ class IntegrationTest {
                 .build()
         ).execute().use { rsp ->
             assertEquals(
-                "{\"total\":1,\"offset\":0,\"limit\":50,\"items\":[{\"id\":\"990023ace67a\",\"name\":\"Fancy Album\",\"artist\":{\"id\":\"23129390abdc\",\"name\":\"Some Super Fancy Artist\",\"artistImage\":\"http://artist.com/image.png\",\"popularity\":90},\"releaseDate\":\"2020-08-01\",\"albumArtUrl\":\"http://albumart.de/image1.png\",\"albumType\":\"ALBUM\",\"storyType\":\"UNABRIDGED\",\"totalTracks\":10,\"totalDurationMs\":9078934,\"allTracksNotExplicit\":true,\"allTracksPlayable\":true,\"previewURL\":\"http://previewurl.de/sample.mp3\",\"popularity\":80,\"label\":\"Some Fancy Label\",\"copyright\":\"Copyright owner 1\",\"assumedLanguage\":\"DE\"}]}",
+                "{\"total\":1,\"offset\":0,\"limit\":50,\"items\":[{\"id\":\"990023ace67a\",\"name\":\"Fancy Album\",\"artist\":{\"id\":\"23129390abdc\",\"name\":\"Some Super Fancy Artist\",\"artistImage\":\"http://artist.com/image.png\",\"popularity\":90},\"releaseDate\":\"2020-08-01\",\"albumArtUrl\":\"http://albumart.de/image1.png\",\"albumType\":\"ALBUM\",\"storyType\":\"UNABRIDGED\",\"totalTracks\":10,\"totalDurationMs\":9078934,\"allTracksNotExplicit\":true,\"allTracksPlayable\":true,\"previewURL\":\"http://previewurl.de/sample.mp3\",\"popularity\":60,\"label\":\"Some Fancy Label\",\"copyright\":\"Copyright owner 1\",\"assumedLanguage\":\"DE\"}]}",
                 rsp.body!!.string()
             )
             assertEquals(StatusCode.OK.value(), rsp.code)
@@ -197,7 +197,7 @@ class IntegrationTest {
                 .build()
         ).execute().use { rsp ->
             assertEquals(
-                "{\"total\":2,\"offset\":0,\"limit\":1,\"items\":[{\"id\":\"990023ace67a\",\"name\":\"Fancy Album\",\"artist\":{\"id\":\"23129390abdc\",\"name\":\"Some Super Fancy Artist\",\"artistImage\":\"http://artist.com/image.png\",\"popularity\":90},\"releaseDate\":\"2020-08-01\",\"albumArtUrl\":\"http://albumart.de/image1.png\",\"albumType\":\"ALBUM\",\"storyType\":\"UNABRIDGED\",\"totalTracks\":10,\"totalDurationMs\":9078934,\"allTracksNotExplicit\":true,\"allTracksPlayable\":true,\"previewURL\":\"http://previewurl.de/sample.mp3\",\"popularity\":80,\"label\":\"Some Fancy Label\",\"copyright\":\"Copyright owner 1\",\"assumedLanguage\":\"DE\"}]}",
+                "{\"total\":2,\"offset\":0,\"limit\":1,\"items\":[{\"id\":\"2847a676de8b\",\"name\":\"Super Album\",\"artist\":{\"id\":\"23129390abdc\",\"name\":\"Some Super Fancy Artist\",\"artistImage\":\"http://artist.com/image.png\",\"popularity\":90},\"releaseDate\":\"1992-08-03\",\"albumArtUrl\":\"http://albumart.de/image2.png\",\"albumType\":\"COMPILATION\",\"storyType\":\"ABRIDGED\",\"totalTracks\":10,\"totalDurationMs\":9078934,\"allTracksNotExplicit\":true,\"allTracksPlayable\":true,\"previewURL\":\"http://previewurl.de/sample.mp3\",\"popularity\":80,\"label\":\"Some Fancy Label\",\"copyright\":\"Copyright owner 2\",\"assumedLanguage\":\"EN\"}]}",
                 rsp.body!!.string()
             )
             assertEquals(StatusCode.OK.value(), rsp.code)
@@ -209,7 +209,7 @@ class IntegrationTest {
                 .build()
         ).execute().use { rsp ->
             assertEquals(
-                "{\"total\":2,\"offset\":1,\"limit\":1,\"items\":[{\"id\":\"2847a676de8b\",\"name\":\"Super Album\",\"artist\":{\"id\":\"23129390abdc\",\"name\":\"Some Super Fancy Artist\",\"artistImage\":\"http://artist.com/image.png\",\"popularity\":90},\"releaseDate\":\"1992-08-03\",\"albumArtUrl\":\"http://albumart.de/image2.png\",\"albumType\":\"COMPILATION\",\"storyType\":\"ABRIDGED\",\"totalTracks\":10,\"totalDurationMs\":9078934,\"allTracksNotExplicit\":true,\"allTracksPlayable\":true,\"previewURL\":\"http://previewurl.de/sample.mp3\",\"popularity\":80,\"label\":\"Some Fancy Label\",\"copyright\":\"Copyright owner 2\",\"assumedLanguage\":\"EN\"}]}",
+                "{\"total\":2,\"offset\":1,\"limit\":1,\"items\":[{\"id\":\"990023ace67a\",\"name\":\"Fancy Album\",\"artist\":{\"id\":\"23129390abdc\",\"name\":\"Some Super Fancy Artist\",\"artistImage\":\"http://artist.com/image.png\",\"popularity\":90},\"releaseDate\":\"2020-08-01\",\"albumArtUrl\":\"http://albumart.de/image1.png\",\"albumType\":\"ALBUM\",\"storyType\":\"UNABRIDGED\",\"totalTracks\":10,\"totalDurationMs\":9078934,\"allTracksNotExplicit\":true,\"allTracksPlayable\":true,\"previewURL\":\"http://previewurl.de/sample.mp3\",\"popularity\":60,\"label\":\"Some Fancy Label\",\"copyright\":\"Copyright owner 1\",\"assumedLanguage\":\"DE\"}]}",
                 rsp.body!!.string()
             )
             assertEquals(StatusCode.OK.value(), rsp.code)
