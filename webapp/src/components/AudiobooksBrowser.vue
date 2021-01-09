@@ -1,7 +1,7 @@
 <template lang="pug">
 .audiobooksBrowser
   h3 Hello World
-  TabBar
+  TabBar(:tabs="tabs" :initialActiveTab="'audiobooks'" @tabSelect="tabSelect")
 </template>
 
 <script>
@@ -12,6 +12,22 @@ export default {
   components: {
     TabBar,
   },
+  data: () => {
+    return {
+      tabs: [{
+        label: "Audiobooks",
+        value: "audiobooks"
+      }, {
+        label: "Authors",
+        value: "authors"
+      }]
+    }
+  },
+  methods: {
+    tabSelect: (val) => {
+      console.log(val)
+    }
+  }
 };
 </script>
 

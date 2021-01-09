@@ -1,39 +1,41 @@
-<template>
-<div class="tabs is-boxed">
-  <ul>
-    <li class="is-active">
-      <a>
-        <span class="icon is-small"><i class="fas fa-image" aria-hidden="true"></i></span>
-        <span>Pictures</span>
-      </a>
-    </li>
-    <li>
-      <a>
-        <span class="icon is-small"><i class="fas fa-music" aria-hidden="true"></i></span>
-        <span>Music</span>
-      </a>
-    </li>
-    <li>
-      <a>
-        <span class="icon is-small"><i class="fas fa-film" aria-hidden="true"></i></span>
-        <span>Videos</span>
-      </a>
-    </li>
-    <li>
-      <a>
-        <span class="icon is-small"><i class="far fa-file-alt" aria-hidden="true"></i></span>
-        <span>Documents</span>
-      </a>
-    </li>
-  </ul>
-</div>
+<template lang="pug">
+.tabs.is-boxed
+  ul
+    li(v-for="tab in tabs" :class="{'is-active': tab.value == activeTab}")
+      a(@click="tabSelect(tab.value)")
+        span.icon.is-small
+          i.fas.fa-image(aria-hidden="true")
+        span {{tab.label}}
 </template>
 
 <script>
 export default {
   name: 'TabBar',
   props: {
-    msg: String
+    tabs: {
+      type: Array,
+      validator: (val) => {
+        const hasOwn = (self, propName) => {
+          return Object.prototype.hasOwnProperty.call(self, propName)
+        }
+        val.forEach((item) => {
+          if (hasOwn(item, "label") && hasOwn(item, "value")) return false
+        })
+        return true
+      }
+    },
+    initialActiveTab: String
+  },
+  data: function () {
+    return {
+      activeTab: this.initialActiveTab
+    }
+  },
+  methods: {
+    tabSelect: function (val) {
+      this.activeTab = val
+      this.$emit("tabSelect", val)
+    }
   }
 }
 </script>
