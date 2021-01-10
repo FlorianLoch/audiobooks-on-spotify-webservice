@@ -1,12 +1,46 @@
-<template>
-  <div id="app">
-    <div id="nav">
-      <router-link to="/">Home</router-link> |
-      <router-link to="/about">About</router-link>
-    </div>
-    <router-view/>
-  </div>
+<template lang="pug">
+.app
+  TabBar(:tabs="tabs", :activeTab.sync="activeTab", @tabSelect="tabSelect")
+  router-view
 </template>
+
+<script>
+import TabBar from "@/components/TabBar.vue";
+
+export default {
+  name: "AudiobooksBrowser",
+  components: {
+    TabBar,
+  },
+  data: () => {
+    return {
+      tabs: [
+        {
+          label: "Audiobooks",
+          value: "audiobooks",
+        },
+        {
+          label: "Authors",
+          value: "authors",
+        },
+      ],
+      activeTab: "audiobooks",
+    };
+  },
+  watch: {
+    $route: "routeChanged",
+  },
+  methods: {
+    routeChanged: function () {
+      console.log(this.$route.path);
+      this.activeTab = this.$route.path.substr(1)
+    },
+    tabSelect: function (val) {
+      this.$router.push({ path: val });
+    },
+  },
+};
+</script>
 
 <style lang="scss">
 #app {

@@ -24,16 +24,18 @@ export default {
         return true
       }
     },
-    initialActiveTab: String
+    activeTab: String
   },
-  data: function () {
-    return {
-      activeTab: this.initialActiveTab
-    }
-  },
+  // data: function () {
+  //   return {
+  //     activeTab: this.initialActiveTab
+  //   }
+  // },
   methods: {
     tabSelect: function (val) {
-      this.activeTab = val
+      if (val === this.activeTab) return
+      // this.activeTab = val
+      this.$emit("update:activeTab", val)
       this.$emit("tabSelect", val)
     }
   }
