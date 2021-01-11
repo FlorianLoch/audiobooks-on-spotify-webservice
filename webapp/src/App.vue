@@ -1,7 +1,8 @@
 <template lang="pug">
-.app
+.app.container
   TabBar(:tabs="tabs", :activeTab.sync="activeTab", @tabSelect="tabSelect")
-  router-view
+  keep-alive
+    router-view
 </template>
 
 <script>
@@ -30,13 +31,17 @@ export default {
   watch: {
     $route: "routeChanged",
   },
+  created: function () {
+    this.routeChanged()
+  },
   methods: {
     routeChanged: function () {
       console.log(this.$route.path);
-      this.activeTab = this.$route.path.substr(1)
+      console.log(this.$route.meta.tabValue);
+      this.activeTab = this.$route.meta.tabValue
     },
     tabSelect: function (val) {
-      this.$router.push({ path: val });
+      this.$router.push({ name: val });
     },
   },
 };
