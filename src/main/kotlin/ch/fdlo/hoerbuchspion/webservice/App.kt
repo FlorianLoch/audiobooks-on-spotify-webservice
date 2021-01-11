@@ -3,14 +3,11 @@ package ch.fdlo.hoerbuchspion.webservice
 import ch.fdlo.hoerbuchspion.webservice.data.*
 import ch.fdlo.hoerbuchspion.webservice.db.QueryBuilder
 import ch.fdlo.hoerbuchspion.webservice.db.queryCrawlStats
-import io.jooby.Context
-import io.jooby.Kooby
+import io.jooby.*
 import io.jooby.hibernate.HibernateModule
 import io.jooby.hikari.HikariModule
 import io.jooby.json.JacksonModule
-import io.jooby.runApp
 import io.jooby.whoops.WhoopsModule
-import io.jooby.OpenAPIModule
 import io.jooby.annotations.QueryParam
 import io.swagger.v3.oas.annotations.OpenAPIDefinition
 import io.swagger.v3.oas.annotations.Operation
@@ -41,6 +38,8 @@ class App : Kooby({
     install(JacksonModule())
 
     install(HikariModule())
+
+    decorator(CorsHandler(Cors.from(config)))
 
     // We need to explicitly state the package, otherwise Hibernate won't be initialized correctly (only when running tests)
     install(HibernateModule().scan("ch.fdlo.hoerbuchspion.webservice.data"))
