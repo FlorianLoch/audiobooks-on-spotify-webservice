@@ -1,17 +1,27 @@
 <template lang="pug">
-.app.container
-  TabBar(:tabs="tabs", :activeTab.sync="activeTab", @tabSelect="tabSelect")
-  keep-alive
-    router-view
+.app
+  .hero.is-primary
+    .hero-body
+      .container
+        h1.title Hörbuchspion
+        h2.subtitle Making it easier to find audiobooks on Spotify!
+  .container.mt-4
+    TabBar(:tabs="tabs", :activeTab.sync="activeTab", @tabSelect="tabSelect")
+    keep-alive
+      router-view
+  .footer.mt-6
+      .content.has-text-centered
+        p Hoerbuchspion, WebUI v0.1
+        p << THIS WOULD BE A NEAT PLACE FOR SOME CRAWL STATS >>
 </template>
 
 <script>
 import TabBar from "@/components/TabBar.vue";
 
 export default {
-  name: "AudiobooksBrowser",
+  name: "App",
   components: {
-    TabBar,
+    TabBar
   },
   data: () => {
     return {
@@ -19,25 +29,27 @@ export default {
         {
           label: "Audiobooks",
           value: "audiobooks",
+          icon: "mdi-book-open-variant"
         },
         {
           label: "Authors",
           value: "authors",
+          icon: "mdi-account"
         },
       ],
       activeTab: "audiobooks",
     };
   },
   watch: {
-    $route: "routeChanged",
+    $route: "onRouteChanged",
   },
   created: function () {
-    this.routeChanged()
+    this.onRouteChanged()
   },
   methods: {
-    routeChanged: function () {
-      console.log(this.$route.path);
-      console.log(this.$route.meta.tabValue);
+    onRouteChanged: function () {
+      // console.log(this.$route.path);
+      // console.log(this.$route.meta.tabValue);
       this.activeTab = this.$route.meta.tabValue
     },
     tabSelect: function (val) {
@@ -48,24 +60,5 @@ export default {
 </script>
 
 <style lang="scss">
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-}
 
-#nav {
-  padding: 30px;
-
-  a {
-    font-weight: bold;
-    color: #2c3e50;
-
-    &.router-link-exact-active {
-      color: #42b983;
-    }
-  }
-}
 </style>

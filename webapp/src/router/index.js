@@ -1,42 +1,25 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
-import AudiobooksBrowser from '@/components/AudiobooksBrowser.vue'
-import AudiobooksDetails from '@/components/AudiobooksDetails.vue'
-import AudiobooksList from '@/components/AudiobooksList.vue'
-
+import AudiobookBrowser from '@/components/AudiobookBrowser.vue'
 
 Vue.use(VueRouter)
 
 const routes = [
   {
-    path: "/audiobooks",
-    component: AudiobooksBrowser,
+    path: "/authors/:id?",
+    name: "authors",
+    component: undefined, // TODO: Replace this
+    meta: {
+      "tabValue": "authors"
+    }
+  }, {
+    name: "audiobooks",
+    path: "/audiobooks/:id?",
+    component: AudiobookBrowser,
     meta: {
       "tabValue": "audiobooks"
     },
     alias: "/",
-    children: [{
-      path: ":id",
-      component: AudiobooksDetails,
-      meta: {
-        "tabValue": "audiobooks"
-      }
-    }, {
-      path: "",
-      name: "audiobooks",
-      component: AudiobooksList,
-      meta: {
-        "tabValue": "audiobooks"
-      }
-    }]
-  },
-  {
-    path: "/authors/:id?",
-    name: "authors",
-    component: AudiobooksBrowser, // TODO: Replace this
-    meta: {
-      "tabValue": "authors"
-    }
   },
   {
     path: '/about',
@@ -49,21 +32,29 @@ const routes = [
 ]
 
 const router = new VueRouter({
-  mode: 'history',
+  // mode: 'history',
   routes
 })
 
-function hasQueryParams(route) {
-  return !!Object.keys(route.query).length
-}
 
-router.beforeEach((to, from, next) => {
-   if(!hasQueryParams(to) && hasQueryParams(from)){
-    next(Object.assign({}, to, {query: from.query}))
-  } else {
-    next()
-  }
-})
+
+// router.beforeEach((to, from, next) => {
+//   function hasQueryParams(route) {
+//     return !!Object.keys(route.query).length
+//   }
+
+//   // Drop the query params in case the entity changes (i.e., query params for searching audiobooks do not make sense when switching to author tab)
+//   function sameEntity() {
+//     console.log(to)
+//     return from.name === to.name
+//   }
+
+//   if (!hasQueryParams(to) && hasQueryParams(from) && sameEntity()) {
+//     next(Object.assign({}, to, { query: from.query }))
+//   } else {
+//     next()
+//   }
+// })
 
 // router.beforeEach((to, from, next) => {
 //   next(Object.assign({}, to, {query: from.query}))

@@ -1,29 +1,66 @@
 import axios from "axios"
 
-const API = function (Vue) {
+const PAGE_SIZE = 10
+const API_URL = "http://localhost:8080"
+
+const API = function () {
   this._cache = []
 
-  const fetch = (entity, id, queryParams ) => {
-    return axios.get(`/${entity}${(id ? `/${id}` : "")}`, {
-      params: queryParams
+  const fetch = (entity, params, page) => {
+    params = params || {};
+    params.offset = page * PAGE_SIZE;
+    params.limit = PAGE_SIZE
+
+    const prom = axios.get(`${API_URL}/${entity}`, { params })
+
+    return prom.then((response) => {
+      return new Promise((resolve) => {
+        let totalPages = Math.floor(response.data.total / PAGE_SIZE)
+        if (response.data.total % PAGE_SIZE > 0) {
+          totalPages++
+        }
+
+        const totalItems = response.data.total
+
+        resolve({
+          items: response.data.items,
+          totalPages,
+          totalItems
+        })
+      })
+    })
+  }
+
+  const fetchSingle = (entity, id) => {
+    const prom = axios.get(`${API_URL}/${entity}/${id}`)
+
+    return prom.then((response) => {
+      return new Promise((resolve) => {
+        resolve(response.data)
+      })
     })
   }
 
   this.fetchAudiobooks = (searchTerm, unabridgedOnly, page) => {
-    fetch()
+    return fetch("albums", {
+      s: searchTerm,
+      unabridged_only: unabridgedOnly,
+    }, page)
+  }
+
+  this.fetchSingleAudiobook = (id) => {
+    return fetchSingle("albums", id)
   }
 
   this.fetchData = () => {
     fetch()
   }
 
-  this.fetchAuthors = () => {
-
-  }
+  this.fetchAuthors = () => { }
 }
 
 API.install = function (Vue) {
-  Vue.prototype.$api = new API(Vue)
-}
+  Vue.prototype.$api = new API();
+};
 
 export default API
