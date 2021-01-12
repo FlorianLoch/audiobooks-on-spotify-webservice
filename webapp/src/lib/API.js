@@ -51,11 +51,11 @@ const API = function () {
     return fetchSingle("albums", id)
   }
 
-  this.fetchData = () => {
-    fetch()
+  this.fetchAuthors = (searchTerm, page) => {
+    return fetch("artists", {
+      s: searchTerm
+    }, page)
   }
-
-  this.fetchAuthors = () => { }
 }
 
 API.install = function (Vue) {

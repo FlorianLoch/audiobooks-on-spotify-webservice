@@ -1,21 +1,21 @@
 <template lang="pug">
-.audiobookDetails Details
+.audiobookDetails
   b-modal(v-model="showModal" width="640px" scroll="keep")
     div(v-if="showModal && details")
-    .card
-      .card-image
-        figure.image.is-1by1
-          img(:src="details.albumArtUrl")
-        .card-content
-          p.title.is-4 {{details.name}}
-          .media
-            .media-left
-              figure.image.is-64x64
-                img(:src="details.artist.artistImage")
-            .media-content
-              p.title.is-5 {{details.artist.name}}
-          .content
-            p Add some details...
+      .card
+        .card-image
+          figure.image.is-1by1
+            img(:src="details.albumArtUrl")
+          .card-content
+            p.title.is-4 {{details.name}}
+            .media
+              .media-left
+                figure.image.is-64x64
+                  img(:src="details.artist.artistImage")
+              .media-content
+                p.title.is-5 {{details.artist.name}}
+            .content
+              p Add some details...
 </template>
 
 <script>

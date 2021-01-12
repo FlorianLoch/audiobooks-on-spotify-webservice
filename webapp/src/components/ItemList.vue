@@ -1,16 +1,11 @@
 <template lang="pug">
-.AudiobookList
+.ItemList
   div(v-if="items.length > 0")
-    .media(v-for="(item, index) in items" @click="onItemSelected(item.id)")
-      .media-left
-        figure.image.is-128x128
-          img(:src="item.albumArtUrl")
-      .media-content
-        p.title.is-4 {{item.name}}
-        p.subtitle {{item.artist.name}}
+    .media(v-for="item in items" @click="onItemSelected(item.id)")
+      slot(v-bind="item")
   div(v-else).my-6.py-6
     p.title.is-3.has-text-centered Nothing here. Start a search.
-  div(v-if="totalPages > 0").mt-4
+  div(v-if="totalPages > 1").mt-4
     b-pagination(
       :total="totalPages",
       :current="currentPage",
@@ -27,7 +22,7 @@
 
 <script>
 export default {
-  name: "AudiobookList",
+  name: "ItemList",
   components: {},
   props: {
     items: Array,

@@ -1,6 +1,5 @@
 <template lang="pug">
-.AudiobookBrowser
-  audiobookDetails(ref="detailsComponent")
+.AuthorBrowser
   nav.notification.px-6
     .columns.is-multiline
       b-field.column.is-full
@@ -8,53 +7,44 @@
           icon="magnify",
           v-model="searchTerm",
           type="search",
-          placeholder="Search audiobooks for..."
+          placeholder="Search authors for..."
           expanded
           @keyup.native="onKeyUp"
         )
         p.control
           b-button.is-primary(@click="search") Go!
-      b-field.column
-        b-switch(v-model="unabridgedOnly" @input="search") Show only unabridged audiobooks
     .level
       h3 Found
-        strong {{ ` ${audioBooksFound} `}}
-        | audiobooks
-  ItemList(:items="items" :totalPages="totalPages" :currentPage="currentPage + 1" @pageChange="onPageChange" @itemSelected="onItemSelected")
+        strong {{ ` ${authorsFound} `}}
+        | authors
+  ItemList(:items="items" :totalPages="totalPages" :currentPage="currentPage + 1" @pageChange="onPageChange")
     template(v-slot="item")
       .media-left
         figure.image.is-128x128
-          img(:src="item.albumArtUrl")
+          img(:src="item.artistImage")
       .media-content
         p.title.is-4 {{item.name}}
-        p.subtitle {{item.artist.name}}
+        p.subtitle {{item.popularity}}
 </template>
 
 <script>
 import ItemList from '@/components/ItemList.vue'
-import AudiobookDetails from '@/components/AudiobookDetails.vue'
 
 export default {
-  name: "AudiobookBrowser",
+  name: "AuthorBrowser",
   components: {
-    ItemList,
-    AudiobookDetails
+    ItemList
   },
   data: () => {
     return {
       searchTerm: "",
-      unabridgedOnly: false,
       currentPage: 0,
-      audioBooksFound: 0,
+      authorsFound: 0,
       totalPages: 0,
       items: []
     }
   },
   mounted: function () {
-    if (this.$route.params.id) {
-      this.showDetails(this.$route.params.id)
-    }
-
     this.readParametersFromRoute()
     this.search()
   },
@@ -71,32 +61,17 @@ export default {
         this.currentPage = page
       })
     },
-    onItemSelected: function (id) {
-      this.showDetails(id)
-    },
     updateRoute: function () {
-      this.$router.push({params: {
-        id: ""
-      }, query: {
-        s: this.searchTerm,
-        unabridgedOnly: this.unabridgedOnly,
-        currentPage: this.currentPage
+      this.$router.push({
+        query: {
+          s: this.searchTerm,
+          currentPage: this.currentPage
       }})
     },
     readParametersFromRoute: function () {
       const q = this.$route.query
       this.searchTerm = q.s || ""
-      this.unabridgedOnly = (q.unabridgedOnly || false) == "true"
       this.currentPage = parseInt(q.currentPage || 0)
-    },
-    showDetails: function (id) {
-      this.$api.fetchSingleAudiobook(id).then((response) => {
-        this.$router.push({name: "audiobooks", params: {
-          id
-        }})
-
-        this.$refs.detailsComponent.show(response)
-      })
     },
     search: function () {
       this.updateRoute()
@@ -105,11 +80,11 @@ export default {
       this.fetchData(this.currentPage)
     },
     fetchData: function (page) {
-      return this.$api.fetchAudiobooks(this.searchTerm, this.unabridgedOnly, page).then((response) => {
+      return this.$api.fetchAuthors(this.searchTerm, page).then((response) => {
         console.log(response)
         this.items = response.items
         this.totalPages = response.totalPages
-        this.audioBooksFound = response.totalItems
+        this.authorsFound = response.totalItems
       })
     }
   }
