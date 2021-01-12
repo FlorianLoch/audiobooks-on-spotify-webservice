@@ -37,7 +37,7 @@ class QueryBuilder {
                 criteria = criteria.and(album.albumDetails.assumedLanguage.`in`(languages))
             }
 
-            return fetchFromRequest(em, album, criteria, album.albumDetails.popularity, offset, limit)
+            return fetchRecordsFromRequest(em, album, criteria, album.albumDetails.popularity, offset, limit)
         }
 
         fun fetchArtists(
@@ -48,10 +48,10 @@ class QueryBuilder {
         ): PaginationWrapper<Artist> {
             val criteria = buildSearchTermPredicate(artist.name, searchTerm)
 
-            return fetchFromRequest(em, artist, criteria, artist.artistDetails.popularity, offset, limit)
+            return fetchRecordsFromRequest(em, artist, criteria, artist.artistDetails.popularity, offset, limit)
         }
 
-        private fun <T> fetchFromRequest(
+        private fun <T> fetchRecordsFromRequest(
             em: EntityManager,
             from: EntityPathBase<T>,
             criteria: Predicate,
@@ -90,6 +90,24 @@ class QueryBuilder {
             }
 
             return langSet
+        }
+
+        fun fetchSingleAlbum(em: EntityManager, id: String): Album? {
+            return fetchSingleRecordFromRequest(em, album, album.id.eq(id))
+        }
+
+        fun fetchSingleArtist(em: EntityManager, id: String): Artist? {
+            return fetchSingleRecordFromRequest(em, artist, artist.id.eq(id))
+        }
+
+        private fun <T> fetchSingleRecordFromRequest(
+            em: EntityManager,
+            from: EntityPathBase<T>,
+            criteria: Predicate,
+        ): T? {
+            return JPAQuery<T>(em).select(
+                from
+            ).from(from).where(criteria).fetchOne()
         }
     }
 }

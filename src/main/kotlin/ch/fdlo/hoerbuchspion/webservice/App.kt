@@ -8,22 +8,16 @@ import io.jooby.hibernate.HibernateModule
 import io.jooby.hikari.HikariModule
 import io.jooby.json.JacksonModule
 import io.jooby.whoops.WhoopsModule
-import io.jooby.annotations.QueryParam
 import io.swagger.v3.oas.annotations.OpenAPIDefinition
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.Parameter
 import io.swagger.v3.oas.annotations.enums.ParameterIn
-import io.swagger.v3.oas.annotations.info.Contact
 import io.swagger.v3.oas.annotations.info.Info
-import io.swagger.v3.oas.annotations.info.License
 import io.swagger.v3.oas.annotations.media.Content
 import io.swagger.v3.oas.annotations.media.ExampleObject
 import io.swagger.v3.oas.annotations.media.Schema
 import io.swagger.v3.oas.annotations.responses.ApiResponse
-import java.lang.IllegalArgumentException
-import java.lang.Long
 import javax.persistence.EntityManager
-import kotlin.math.min
 
 @OpenAPIDefinition(
     info = Info(
@@ -47,8 +41,10 @@ class App : Kooby({
     install(WhoopsModule())
 
     get("/albums", ::getAlbums)
+    get("/albums/{id}", ::getSingleAlbum)
 
     get("/artists", ::getArtists)
+    get("/artists/{id}", ::getSingleArtist)
 
     get("/stats", ::getStats)
 })
@@ -154,17 +150,58 @@ fun getAlbums(ctx: Context): PaginationWrapper<Album> {
 }
 
 @Operation(
+    summary = "Provides a single album/audiobook matching the given id.",
+    method = "GET",
+    responses = [
+        ApiResponse(
+            responseCode = "400",
+            content = [Content(
+                mediaType = "application/json",
+                examples = [ExampleObject(
+                    value = "{\n" +
+                            "  \"message\": \"Error description\",\n" +
+                            "  \"status\": 400,\n" +
+                            "  \"reason\": \"Some details on the error.\"\n" +
+                            "}"
+                )]
+            )]
+        )],
+    parameters = [
+        Parameter(
+            name = "id",
+            description = "Describes which record to return.",
+            `in` = ParameterIn.PATH,
+            required = false,
+            schema = Schema(
+                type = "string",
+            )
+        )]
+)
+fun getSingleAlbum(ctx: Context): Album {
+    val id = ctx.path("id").value()
+
+    val em = ctx.require(EntityManager::class.java)
+
+    val album = QueryBuilder.fetchSingleAlbum(em, id)
+    if (album == null) {
+        throw NoSuchElementException("Identifier '$id' cannot be resolved to an album.")
+    } else {
+        return album
+    }
+}
+
+@Operation(
     summary = "Provides artists/authors matching given filters. Information is wrapped inside a PaginationWrapper object.",
     method = "GET",
     responses = [
         ApiResponse(
             responseCode = "default",
             content = [Content(
-                    mediaType = "application/json",
-                    examples = [ExampleObject(
-                        value = "{\"total\":1,\"offset\":0,\"limit\":50,\"items\":[{\"id\":\"23129390abdc\",\"name\":\"Some Super Fancy Artist\",\"artistImage\":\"http://artist.com/image.png\",\"popularity\":90}]}"
-                    )]
+                mediaType = "application/json",
+                examples = [ExampleObject(
+                    value = "{\"total\":1,\"offset\":0,\"limit\":50,\"items\":[{\"id\":\"23129390abdc\",\"name\":\"Some Super Fancy Artist\",\"artistImage\":\"http://artist.com/image.png\",\"popularity\":90}]}"
                 )]
+            )]
         )],
     parameters = [
         Parameter(
@@ -208,6 +245,47 @@ fun getArtists(ctx: Context): PaginationWrapper<Artist> {
     val em = ctx.require(EntityManager::class.java)
 
     return QueryBuilder.fetchArtists(em, offset, limit, searchTerm)
+}
+
+@Operation(
+    summary = "Provides a single artist/author matching the given id.",
+    method = "GET",
+    responses = [
+        ApiResponse(
+            responseCode = "400",
+            content = [Content(
+                mediaType = "application/json",
+                examples = [ExampleObject(
+                    value = "{\n" +
+                            "  \"message\": \"Error description\",\n" +
+                            "  \"status\": 400,\n" +
+                            "  \"reason\": \"Some details on the error.\"\n" +
+                            "}"
+                )]
+            )]
+        )],
+    parameters = [
+        Parameter(
+            name = "id",
+            description = "Describes which record to return.",
+            `in` = ParameterIn.PATH,
+            required = false,
+            schema = Schema(
+                type = "string",
+            )
+        )]
+)
+fun getSingleArtist(ctx: Context): Artist {
+    val id = ctx.path("id").value()
+
+    val em = ctx.require(EntityManager::class.java)
+
+    val artist = QueryBuilder.fetchSingleArtist(em, id)
+    if (artist == null) {
+        throw NoSuchElementException("Identifier '$id' cannot be resolved to an artist.")
+    } else {
+        return artist
+    }
 }
 
 @Operation(

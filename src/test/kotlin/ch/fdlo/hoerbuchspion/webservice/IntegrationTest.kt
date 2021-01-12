@@ -42,6 +42,52 @@ class IntegrationTest {
     }
 
     @Test
+    fun shouldProvideASingleAlbumByItsId(serverPort: Int) {
+        client.newCall(
+            Request.Builder()
+                .url("http://localhost:$serverPort/albums/990023ace67a")
+                .build()
+        ).execute().use { rsp ->
+            assertEquals(
+                "{\"id\":\"990023ace67a\",\"name\":\"Fancy Album\",\"artist\":{\"id\":\"23129390abdc\",\"name\":\"Some Super Fancy Artist\",\"artistImage\":\"http://artist.com/image.png\",\"popularity\":90},\"releaseDate\":\"2020-08-01\",\"albumArtUrl\":\"http://albumart.de/image1.png\",\"albumType\":\"ALBUM\",\"storyType\":\"UNABRIDGED\",\"totalTracks\":10,\"totalDurationMs\":9078934,\"allTracksNotExplicit\":true,\"allTracksPlayable\":true,\"previewURL\":\"http://previewurl.de/sample.mp3\",\"popularity\":60,\"label\":\"Some Fancy Label\",\"copyright\":\"Copyright owner 1\",\"assumedLanguage\":\"DE\"}",
+                rsp.body!!.string()
+            )
+            assertEquals(StatusCode.OK.value(), rsp.code)
+        }
+    }
+
+    @Test
+    fun shouldReturnAnErrorWhenAskingForAlbumWithInvalidId(serverPort: Int) {
+        client.newCall(
+            Request.Builder()
+                .url("http://localhost:$serverPort/albums/990023a")
+                .header("Accept", "application/json")
+                .build()
+        ).execute().use { rsp ->
+            assertEquals(
+                "{\"message\":\"Identifier '990023a' cannot be resolved to an album.\",\"statusCode\":400,\"reason\":\"Bad Request\"}",
+                rsp.body!!.string()
+            )
+            assertEquals(StatusCode.BAD_REQUEST.value(), rsp.code)
+        }
+    }
+
+    @Test
+    fun shouldProvideASingleArtistByItsId(serverPort: Int) {
+        client.newCall(
+            Request.Builder()
+                .url("http://localhost:$serverPort/artists/23129390abdc")
+                .build()
+        ).execute().use { rsp ->
+            assertEquals(
+                "{\"id\":\"23129390abdc\",\"name\":\"Some Super Fancy Artist\",\"artistImage\":\"http://artist.com/image.png\",\"popularity\":90}",
+                rsp.body!!.string()
+            )
+            assertEquals(StatusCode.OK.value(), rsp.code)
+        }
+    }
+
+    @Test
     fun shouldProvideAlbumsViaRESTAPIInDescendingOrderByPopularity(serverPort: Int) {
         client.newCall(
             Request.Builder()
