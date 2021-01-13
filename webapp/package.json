@@ -12,6 +12,7 @@
     "buefy": "^0.9.4",
     "core-js": "^3.6.5",
     "node-sass": "^5.0.0",
+    "nprogress": "^0.2.0",
     "pug": "^3.0.0",
     "pug-plain-loader": "^1.1.0",
     "sass-loader": "^10.1.0",
