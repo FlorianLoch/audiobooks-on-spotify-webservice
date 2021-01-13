@@ -11,8 +11,8 @@
       router-view
   .footer.mt-6
     .content.has-text-centered
-      p Hoerbuchspion, WebUI v0.1
       p << THIS WOULD BE A NEAT PLACE FOR SOME CRAWL STATS >>
+      p Running UI version {{ uiVersion }}
 </template>
 
 <script>
@@ -37,7 +37,8 @@ export default {
           icon: "mdi-account"
         },
       ],
-      activeTab: "audiobooks"
+      activeTab: "audiobooks",
+      uiVersion: process.env.PACKAGE_VERSION
     };
   },
   watch: {
