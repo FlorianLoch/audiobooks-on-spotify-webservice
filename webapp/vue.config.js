@@ -17,11 +17,11 @@ module.exports = {
   },
   configureWebpack: {
     plugins: [
-        new webpack.DefinePlugin({
-            "process.env": {
-                PACKAGE_VERSION: `"${version}"`
-            }
-        })
+      new webpack.DefinePlugin({
+        "process.env": {
+          PACKAGE_VERSION: `"${version}"`
+        }
+      })
     ]
-},
+  }
 }
