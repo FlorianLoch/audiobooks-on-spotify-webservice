@@ -15,7 +15,7 @@
         p.control
           b-button.is-primary(@click="search") Go!
       b-field.column
-        b-switch(v-model="unabridgedOnly", @input="search") Show only unabridged audiobooks
+        b-switch(v-model="unabridgedOnly", @input="onClickSearchBtn") Show only unabridged audiobooks
     .level
       h3 Found
         strong {{ ` ${audioBooksFound} ` }}
@@ -95,11 +95,13 @@ export default {
       const q = this.$route.query
       this.searchTerm = q.s || ""
       this.unabridgedOnly = (q.unabridgedOnly || false) == "true"
-      this.currentPage = parseInt(q.currentPage || 0)
+      this.currentPage = parseInt(q.currentPage) || 0
+
+      console.log("Current Page: ", this.currentPage)
     },
     showDetails: function (id) {
       const formerQueryParams = this.$route.query
-      
+
       this.$api.fetchSingleAudiobook(id).then((response) => {
 
         this.$router.push({
@@ -119,10 +121,14 @@ export default {
         })
       })
     },
+    onClickSearchBtn: function () {
+      // Reset page before performing a fresh search
+      this.currentPage = 0
+      this.search()
+    },
     search: function () {
       this.updateRoute()
 
-      this.currentPage = 0
       this.fetchData(this.currentPage)
     },
     fetchData: function (page) {

@@ -41,18 +41,10 @@ export default {
       uiVersion: process.env.PACKAGE_VERSION
     };
   },
-  watch: {
-    $route: "onRouteChanged",
-  },
   created: function () {
-    this.onRouteChanged()
+    this.activeTab = this.$route.meta.tabValue
   },
   methods: {
-    onRouteChanged: function () {
-      // console.log(this.$route.path);
-      // console.log(this.$route.meta.tabValue);
-      this.activeTab = this.$route.meta.tabValue
-    },
     tabSelect: function (val) {
       this.$router.push({ name: val })
     },

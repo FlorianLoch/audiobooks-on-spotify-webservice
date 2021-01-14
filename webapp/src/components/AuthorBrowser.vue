@@ -12,7 +12,7 @@
           @keyup.native="onKeyUp"
         )
         p.control
-          b-button.is-primary(@click="search") Go!
+          b-button.is-primary(@click="onClickSearchBtn") Go!
     .level
       h3 Found
         strong {{ ` ${authorsFound} `}}
@@ -59,6 +59,7 @@ export default {
       page--
       this.fetchData(page).then(() => {
         this.currentPage = page
+        this.updateRoute()
       })
     },
     updateRoute: function () {
@@ -71,12 +72,16 @@ export default {
     readParametersFromRoute: function () {
       const q = this.$route.query
       this.searchTerm = q.s || ""
-      this.currentPage = parseInt(q.currentPage || 0)
+      this.currentPage = parseInt(q.currentPage) || 0
+    },
+    onClickSearchBtn: function () {
+      // Reset page before performing a fresh search
+      this.currentPage = 0
+      this.search()
     },
     search: function () {
       this.updateRoute()
 
-      this.currentPage = 0
       this.fetchData(this.currentPage)
     },
     fetchData: function (page) {
