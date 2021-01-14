@@ -6,8 +6,7 @@ import API from './lib/API'
 import axios from "axios"
 import NProgress from "nprogress"
 
-import 'buefy/dist/buefy.css'
-import 'nprogress/nprogress.css'
+import './styles.scss'
 
 Vue.use(Buefy)
 Vue.use(API)
