@@ -29,7 +29,7 @@ const routes = [{
   this app is configured correctly. With the current webservice implementation
   this the case - but is has to be ensured, that the routes of the webapp and
   the server do not overlapp. Until they don't the server will always serve the
-  webapp and things should work smoothly.
+  webapp and things should work smoothl.
 */
 
 const router = new VueRouter({

@@ -1,6 +1,6 @@
 <template lang="pug">
 .audiobookDetails
-  b-modal(v-model="showModal" width="640px" scroll="keep")
+  b-modal(v-model="showModal" width="640px" scroll="keep" @close="onClose")
     div(v-if="showModal && details")
       .card
         .card-image
@@ -29,7 +29,9 @@ export default {
     }
   },
   methods: {
-    show: function (details) {
+    show: function (details, onClose) {
+      this.onClose = onClose
+
       this.details = details
       this.showModal = true
     }
