@@ -33,8 +33,10 @@ class IntegrationTest {
 
             em.transaction.begin()
 
-            Files.lines(Paths.get(this::class.java.classLoader.getResource("queries.sql").toURI())).forEach() {
-                em.createNativeQuery(it).executeUpdate()
+            this::class.java.classLoader.getResourceAsStream("queries.sql").bufferedReader().useLines {
+                it.forEach {
+                    em.createNativeQuery(it).executeUpdate()
+                }
             }
 
             em.transaction.commit()
