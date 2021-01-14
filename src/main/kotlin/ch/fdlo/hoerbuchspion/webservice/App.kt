@@ -40,13 +40,16 @@ class App : Kooby({
 
     install(WhoopsModule())
 
-    get("/albums", ::getAlbums)
-    get("/albums/{id}", ::getSingleAlbum)
+    val webappAsset = AssetSource.create(classLoader, "webapp")
+    assets("/?*", AssetHandler("index.html", webappAsset))
 
-    get("/artists", ::getArtists)
-    get("/artists/{id}", ::getSingleArtist)
+    get("/api/albums", ::getAlbums)
+    get("/api/albums/{id}", ::getSingleAlbum)
 
-    get("/stats", ::getStats)
+    get("/api/artists", ::getArtists)
+    get("/api/artists/{id}", ::getSingleArtist)
+
+    get("/api/stats", ::getStats)
 })
 
 @Operation(

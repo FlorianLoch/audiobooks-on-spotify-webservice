@@ -24,8 +24,16 @@ const routes = [{
   }
 ]
 
+/*
+  As we are using the "history" mode we have to make sure the webserver serving
+  this app is configured correctly. With the current webservice implementation
+  this the case - but is has to be ensured, that the routes of the webapp and
+  the server do not overlapp. Until they don't the server will always serve the
+  webapp and things should work smoothly.
+*/
+
 const router = new VueRouter({
-  // mode: 'history',
+  mode: "history",
   routes
 })
 

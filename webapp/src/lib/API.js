@@ -1,6 +1,7 @@
 import axios from "axios"
 
 const PAGE_SIZE = 10
+const API_PATH = "/api"
 
 const API = function () {
   this._cache = []
@@ -10,7 +11,7 @@ const API = function () {
     params.offset = page * PAGE_SIZE;
     params.limit = PAGE_SIZE
 
-    const prom = axios.get(`/${entity}`, { params })
+    const prom = axios.get(`${API_PATH}/${entity}`, { params })
 
     return prom.then((response) => {
       return new Promise((resolve) => {
@@ -31,7 +32,7 @@ const API = function () {
   }
 
   const fetchSingle = (entity, id) => {
-    const prom = axios.get(`/${entity}/${id}`)
+    const prom = axios.get(`${API_PATH}/${entity}/${id}`)
 
     return prom.then((response) => {
       return new Promise((resolve) => {
