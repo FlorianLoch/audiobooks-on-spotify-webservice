@@ -14,20 +14,18 @@ const API = function () {
     const prom = axios.get(`${API_PATH}/${entity}`, { params })
 
     return prom.then((response) => {
-      return new Promise((resolve) => {
-        let totalPages = Math.floor(response.data.total / PAGE_SIZE)
-        if (response.data.total % PAGE_SIZE > 0) {
-          totalPages++
-        }
+      let totalPages = Math.floor(response.data.total / PAGE_SIZE)
+      if (response.data.total % PAGE_SIZE > 0) {
+        totalPages++
+      }
 
-        const totalItems = response.data.total
+      const totalItems = response.data.total
 
-        resolve({
-          items: response.data.items,
-          totalPages,
-          totalItems
-        })
-      })
+      return {
+        items: response.data.items,
+        totalPages,
+        totalItems
+      }
     })
   }
 
@@ -35,9 +33,7 @@ const API = function () {
     const prom = axios.get(`${API_PATH}/${entity}/${id}`)
 
     return prom.then((response) => {
-      return new Promise((resolve) => {
-        resolve(response.data)
-      })
+      return response.data
     })
   }
 

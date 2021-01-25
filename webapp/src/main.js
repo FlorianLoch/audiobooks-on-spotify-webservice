@@ -20,6 +20,9 @@ axios.interceptors.request.use((config) => {
 axios.interceptors.response.use((response) => {
   NProgress.done()
   return response
+}, (err) => {
+  NProgress.done()
+  return Promise.reject(err)
 })
 
 new Vue({
