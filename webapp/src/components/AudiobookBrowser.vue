@@ -30,7 +30,7 @@
     template(v-slot="item")
       .media-left
         figure.image.is-128x128
-          img(:src="item.albumArtUrl")
+          img(:src="item.albumArtURLs.medium")
       .media-content
         p.title.is-4 {{ item.name }}
         p.subtitle {{ item.artist.name }}

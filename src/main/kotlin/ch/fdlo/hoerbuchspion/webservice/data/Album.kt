@@ -14,7 +14,9 @@ private constructor() {  // We need a default constructor because of JPA
     @ManyToOne(cascade = [CascadeType.MERGE, CascadeType.PERSIST])
     val artist: Artist? = null
     val releaseDate: String? = null
-    val albumArtUrl: String? = null
+
+    @Embedded // effectively a OneToOne relation
+    val albumArtURLs: AlbumArtURLs? = null
 
     @Enumerated(EnumType.STRING)
     val albumType: AlbumType? = null

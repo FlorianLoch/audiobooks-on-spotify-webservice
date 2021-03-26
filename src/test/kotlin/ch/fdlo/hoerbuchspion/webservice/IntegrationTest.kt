@@ -47,11 +47,11 @@ class IntegrationTest {
     fun shouldProvideASingleAlbumByItsId(serverPort: Int) {
         client.newCall(
             Request.Builder()
-                .url("http://localhost:$serverPort/albums/990023ace67a")
+                .url("http://localhost:$serverPort/api/albums/990023ace67a")
                 .build()
         ).execute().use { rsp ->
             assertEquals(
-                "{\"id\":\"990023ace67a\",\"name\":\"Fancy Album\",\"artist\":{\"id\":\"23129390abdc\",\"name\":\"Some Super Fancy Artist\",\"artistImage\":\"http://artist.com/image.png\",\"popularity\":90},\"releaseDate\":\"2020-08-01\",\"albumArtUrl\":\"http://albumart.de/image1.png\",\"albumType\":\"ALBUM\",\"storyType\":\"UNABRIDGED\",\"totalTracks\":10,\"totalDurationMs\":9078934,\"allTracksNotExplicit\":true,\"allTracksPlayable\":true,\"previewURL\":\"http://previewurl.de/sample.mp3\",\"popularity\":60,\"label\":\"Some Fancy Label\",\"copyright\":\"Copyright owner 1\",\"assumedLanguage\":\"DE\"}",
+                "{\"id\":\"990023ace67a\",\"name\":\"Fancy Album\",\"artist\":{\"id\":\"23129390abdc\",\"name\":\"Some Super Fancy Artist\",\"artistImage\":\"http://artist.com/image.png\",\"popularity\":90},\"releaseDate\":\"2020-08-01\",\"albumArtURLs\":{\"large\":\"http://albumart.de/image1_lg.png\",\"medium\":\"http://albumart.de/image1_md.png\",\"small\":\"http://albumart.de/image1_sm.png\"},\"albumType\":\"ALBUM\",\"storyType\":\"UNABRIDGED\",\"totalTracks\":10,\"totalDurationMs\":9078934,\"allTracksNotExplicit\":true,\"allTracksPlayable\":true,\"previewURL\":\"http://previewurl.de/sample.mp3\",\"popularity\":60,\"label\":\"Some Fancy Label\",\"copyright\":\"Copyright owner 1\",\"assumedLanguage\":\"DE\"}",
                 rsp.body!!.string()
             )
             assertEquals(StatusCode.OK.value(), rsp.code)
@@ -62,7 +62,7 @@ class IntegrationTest {
     fun shouldReturnAnErrorWhenAskingForAlbumWithInvalidId(serverPort: Int) {
         client.newCall(
             Request.Builder()
-                .url("http://localhost:$serverPort/albums/990023a")
+                .url("http://localhost:$serverPort/api/albums/990023a")
                 .header("Accept", "application/json")
                 .build()
         ).execute().use { rsp ->
@@ -78,7 +78,7 @@ class IntegrationTest {
     fun shouldProvideASingleArtistByItsId(serverPort: Int) {
         client.newCall(
             Request.Builder()
-                .url("http://localhost:$serverPort/artists/23129390abdc")
+                .url("http://localhost:$serverPort/api/artists/23129390abdc")
                 .build()
         ).execute().use { rsp ->
             assertEquals(
@@ -93,11 +93,11 @@ class IntegrationTest {
     fun shouldProvideAlbumsViaRESTAPIInDescendingOrderByPopularity(serverPort: Int) {
         client.newCall(
             Request.Builder()
-                .url("http://localhost:$serverPort/albums")
+                .url("http://localhost:$serverPort/api/albums")
                 .build()
         ).execute().use { rsp ->
             assertEquals(
-                "{\"total\":2,\"offset\":0,\"limit\":50,\"items\":[{\"id\":\"2847a676de8b\",\"name\":\"Super Album\",\"artist\":{\"id\":\"23129390abdc\",\"name\":\"Some Super Fancy Artist\",\"artistImage\":\"http://artist.com/image.png\",\"popularity\":90},\"releaseDate\":\"1992-08-03\",\"albumArtUrl\":\"http://albumart.de/image2.png\",\"albumType\":\"COMPILATION\",\"storyType\":\"ABRIDGED\",\"totalTracks\":10,\"totalDurationMs\":9078934,\"allTracksNotExplicit\":true,\"allTracksPlayable\":true,\"previewURL\":\"http://previewurl.de/sample.mp3\",\"popularity\":80,\"label\":\"Some Fancy Label\",\"copyright\":\"Copyright owner 2\",\"assumedLanguage\":\"EN\"},{\"id\":\"990023ace67a\",\"name\":\"Fancy Album\",\"artist\":{\"id\":\"23129390abdc\",\"name\":\"Some Super Fancy Artist\",\"artistImage\":\"http://artist.com/image.png\",\"popularity\":90},\"releaseDate\":\"2020-08-01\",\"albumArtUrl\":\"http://albumart.de/image1.png\",\"albumType\":\"ALBUM\",\"storyType\":\"UNABRIDGED\",\"totalTracks\":10,\"totalDurationMs\":9078934,\"allTracksNotExplicit\":true,\"allTracksPlayable\":true,\"previewURL\":\"http://previewurl.de/sample.mp3\",\"popularity\":60,\"label\":\"Some Fancy Label\",\"copyright\":\"Copyright owner 1\",\"assumedLanguage\":\"DE\"}]}",
+                "{\"total\":2,\"offset\":0,\"limit\":50,\"items\":[{\"id\":\"2847a676de8b\",\"name\":\"Super Album\",\"artist\":{\"id\":\"23129390abdc\",\"name\":\"Some Super Fancy Artist\",\"artistImage\":\"http://artist.com/image.png\",\"popularity\":90},\"releaseDate\":\"1992-08-03\",\"albumArtURLs\":{\"large\":\"http://albumart.de/image2_lg.png\",\"medium\":\"http://albumart.de/image2_md.png\",\"small\":\"http://albumart.de/image2_sm.png\"},\"albumType\":\"COMPILATION\",\"storyType\":\"ABRIDGED\",\"totalTracks\":10,\"totalDurationMs\":9078934,\"allTracksNotExplicit\":true,\"allTracksPlayable\":true,\"previewURL\":\"http://previewurl.de/sample.mp3\",\"popularity\":80,\"label\":\"Some Fancy Label\",\"copyright\":\"Copyright owner 2\",\"assumedLanguage\":\"EN\"},{\"id\":\"990023ace67a\",\"name\":\"Fancy Album\",\"artist\":{\"id\":\"23129390abdc\",\"name\":\"Some Super Fancy Artist\",\"artistImage\":\"http://artist.com/image.png\",\"popularity\":90},\"releaseDate\":\"2020-08-01\",\"albumArtURLs\":{\"large\":\"http://albumart.de/image1_lg.png\",\"medium\":\"http://albumart.de/image1_md.png\",\"small\":\"http://albumart.de/image1_sm.png\"},\"albumType\":\"ALBUM\",\"storyType\":\"UNABRIDGED\",\"totalTracks\":10,\"totalDurationMs\":9078934,\"allTracksNotExplicit\":true,\"allTracksPlayable\":true,\"previewURL\":\"http://previewurl.de/sample.mp3\",\"popularity\":60,\"label\":\"Some Fancy Label\",\"copyright\":\"Copyright owner 1\",\"assumedLanguage\":\"DE\"}]}",
                 rsp.body!!.string()
             )
             assertEquals(StatusCode.OK.value(), rsp.code)
@@ -108,7 +108,7 @@ class IntegrationTest {
     fun shouldProvideArtistsViaRESTAPI(serverPort: Int) {
         client.newCall(
             Request.Builder()
-                .url("http://localhost:$serverPort/artists")
+                .url("http://localhost:$serverPort/api/artists")
                 .build()
         ).execute().use { rsp ->
             assertEquals(
@@ -123,7 +123,7 @@ class IntegrationTest {
     fun searchShouldNotBeCaseSensitive(serverPort: Int) {
         client.newCall(
             Request.Builder()
-                .url("http://localhost:$serverPort/albums?s=fANCY aLBUM")
+                .url("http://localhost:$serverPort/api/albums?s=fANCY aLBUM")
                 .build()
         ).execute().use { rsp ->
             assertThat(rsp.body!!.string(), startsWith("{\"total\":1,\"offset\":0,\"limit\":50,\"items\":[{\"id\":\"990023ace67a\",\"name\":\"Fancy Album\""))
@@ -135,7 +135,7 @@ class IntegrationTest {
     fun emptySearchQueryResultsInWildcardSearch(serverPort: Int) {
         client.newCall(
             Request.Builder()
-                .url("http://localhost:$serverPort/albums?s=")
+                .url("http://localhost:$serverPort/api/albums?s=")
                 .build()
         ).execute().use { rsp ->
             assertThat(rsp.body!!.string(), startsWith("{\"total\":2,\"offset\":0,\"limit\":50,\"items\":[{"))
@@ -147,7 +147,7 @@ class IntegrationTest {
     fun omittedSearchQueryResultsInWildcardSearch(serverPort: Int) {
         client.newCall(
             Request.Builder()
-                .url("http://localhost:$serverPort/albums")
+                .url("http://localhost:$serverPort/api/albums")
                 .build()
         ).execute().use { rsp ->
             assertThat(rsp.body!!.string(), startsWith("{\"total\":2,\"offset\":0,\"limit\":50,\"items\":[{"))
@@ -159,7 +159,7 @@ class IntegrationTest {
     fun searchTermIsWrappedWithWildcards(serverPort: Int) {
         client.newCall(
             Request.Builder()
-                .url("http://localhost:$serverPort/albums?s=cy Al")
+                .url("http://localhost:$serverPort/api/albums?s=cy Al")
                 .build()
         ).execute().use { rsp ->
             assertThat(rsp.body!!.string(), startsWith("{\"total\":1,\"offset\":0,\"limit\":50,\"items\":[{\"id\":\"990023ace67a\",\"name\":\"Fancy Album\""))
@@ -171,7 +171,7 @@ class IntegrationTest {
     fun emptyListShouldBeReturnedWhenTermDoesNotMatch(serverPort: Int) {
         client.newCall(
             Request.Builder()
-                .url("http://localhost:$serverPort/albums?s=Some Album we do not know about")
+                .url("http://localhost:$serverPort/api/albums?s=Some Album we do not know about")
                 .build()
         ).execute().use { rsp ->
             assertEquals(
@@ -186,11 +186,11 @@ class IntegrationTest {
     fun shouldOnlyReturnUnabridgedAlbumsWhenAskedTo(serverPort: Int) {
         client.newCall(
             Request.Builder()
-                .url("http://localhost:$serverPort/albums?unabridged_only=true")
+                .url("http://localhost:$serverPort/api/albums?unabridged_only=true")
                 .build()
         ).execute().use { rsp ->
             assertEquals(
-                "{\"total\":1,\"offset\":0,\"limit\":50,\"items\":[{\"id\":\"990023ace67a\",\"name\":\"Fancy Album\",\"artist\":{\"id\":\"23129390abdc\",\"name\":\"Some Super Fancy Artist\",\"artistImage\":\"http://artist.com/image.png\",\"popularity\":90},\"releaseDate\":\"2020-08-01\",\"albumArtUrl\":\"http://albumart.de/image1.png\",\"albumType\":\"ALBUM\",\"storyType\":\"UNABRIDGED\",\"totalTracks\":10,\"totalDurationMs\":9078934,\"allTracksNotExplicit\":true,\"allTracksPlayable\":true,\"previewURL\":\"http://previewurl.de/sample.mp3\",\"popularity\":60,\"label\":\"Some Fancy Label\",\"copyright\":\"Copyright owner 1\",\"assumedLanguage\":\"DE\"}]}",
+                "{\"total\":1,\"offset\":0,\"limit\":50,\"items\":[{\"id\":\"990023ace67a\",\"name\":\"Fancy Album\",\"artist\":{\"id\":\"23129390abdc\",\"name\":\"Some Super Fancy Artist\",\"artistImage\":\"http://artist.com/image.png\",\"popularity\":90},\"releaseDate\":\"2020-08-01\",\"albumArtURLs\":{\"large\":\"http://albumart.de/image1_lg.png\",\"medium\":\"http://albumart.de/image1_md.png\",\"small\":\"http://albumart.de/image1_sm.png\"},\"albumType\":\"ALBUM\",\"storyType\":\"UNABRIDGED\",\"totalTracks\":10,\"totalDurationMs\":9078934,\"allTracksNotExplicit\":true,\"allTracksPlayable\":true,\"previewURL\":\"http://previewurl.de/sample.mp3\",\"popularity\":60,\"label\":\"Some Fancy Label\",\"copyright\":\"Copyright owner 1\",\"assumedLanguage\":\"DE\"}]}",
                 rsp.body!!.string()
             )
             assertEquals(StatusCode.OK.value(), rsp.code)
@@ -201,11 +201,11 @@ class IntegrationTest {
     fun shouldBeCapableOfFilteringByLanguageValidLanguage(serverPort: Int) {
         client.newCall(
             Request.Builder()
-                .url("http://localhost:$serverPort/albums?language=de")
+                .url("http://localhost:$serverPort/api/albums?language=de")
                 .build()
         ).execute().use { rsp ->
             assertEquals(
-                "{\"total\":1,\"offset\":0,\"limit\":50,\"items\":[{\"id\":\"990023ace67a\",\"name\":\"Fancy Album\",\"artist\":{\"id\":\"23129390abdc\",\"name\":\"Some Super Fancy Artist\",\"artistImage\":\"http://artist.com/image.png\",\"popularity\":90},\"releaseDate\":\"2020-08-01\",\"albumArtUrl\":\"http://albumart.de/image1.png\",\"albumType\":\"ALBUM\",\"storyType\":\"UNABRIDGED\",\"totalTracks\":10,\"totalDurationMs\":9078934,\"allTracksNotExplicit\":true,\"allTracksPlayable\":true,\"previewURL\":\"http://previewurl.de/sample.mp3\",\"popularity\":60,\"label\":\"Some Fancy Label\",\"copyright\":\"Copyright owner 1\",\"assumedLanguage\":\"DE\"}]}",
+                "{\"total\":1,\"offset\":0,\"limit\":50,\"items\":[{\"id\":\"990023ace67a\",\"name\":\"Fancy Album\",\"artist\":{\"id\":\"23129390abdc\",\"name\":\"Some Super Fancy Artist\",\"artistImage\":\"http://artist.com/image.png\",\"popularity\":90},\"releaseDate\":\"2020-08-01\",\"albumArtURLs\":{\"large\":\"http://albumart.de/image1_lg.png\",\"medium\":\"http://albumart.de/image1_md.png\",\"small\":\"http://albumart.de/image1_sm.png\"},\"albumType\":\"ALBUM\",\"storyType\":\"UNABRIDGED\",\"totalTracks\":10,\"totalDurationMs\":9078934,\"allTracksNotExplicit\":true,\"allTracksPlayable\":true,\"previewURL\":\"http://previewurl.de/sample.mp3\",\"popularity\":60,\"label\":\"Some Fancy Label\",\"copyright\":\"Copyright owner 1\",\"assumedLanguage\":\"DE\"}]}",
                 rsp.body!!.string()
             )
             assertEquals(StatusCode.OK.value(), rsp.code)
@@ -216,7 +216,7 @@ class IntegrationTest {
     fun shouldBeCapableOfFilteringByLanguageInvalidLanguage(serverPort: Int) {
         client.newCall(
             Request.Builder()
-                .url("http://localhost:$serverPort/albums?language=de,en")
+                .url("http://localhost:$serverPort/api/albums?language=de,en")
                 .build()
         ).execute().use { rsp ->
             assertThat(rsp.body!!.string(), containsString("&apos;de,en&apos; is not an ISO 639-1 identifier or does not denote a supported language."))
@@ -228,7 +228,7 @@ class IntegrationTest {
     fun shouldBeCapableOfFilteringByLanguageSeveralLanguages(serverPort: Int) {
         client.newCall(
             Request.Builder()
-                .url("http://localhost:$serverPort/albums?language=de&language=en&language=it")
+                .url("http://localhost:$serverPort/api/albums?language=de&language=en&language=it")
                 .build()
         ).execute().use { rsp ->
             assertThat(rsp.body!!.string(), startsWith("{\"total\":2,\"offset\":0,\"limit\":50,\"items\":"))
@@ -241,11 +241,11 @@ class IntegrationTest {
     fun apiShouldSupportPagination(serverPort: Int) {
         client.newCall(
             Request.Builder()
-                .url("http://localhost:$serverPort/albums?limit=1")
+                .url("http://localhost:$serverPort/api/albums?limit=1")
                 .build()
         ).execute().use { rsp ->
             assertEquals(
-                "{\"total\":2,\"offset\":0,\"limit\":1,\"items\":[{\"id\":\"2847a676de8b\",\"name\":\"Super Album\",\"artist\":{\"id\":\"23129390abdc\",\"name\":\"Some Super Fancy Artist\",\"artistImage\":\"http://artist.com/image.png\",\"popularity\":90},\"releaseDate\":\"1992-08-03\",\"albumArtUrl\":\"http://albumart.de/image2.png\",\"albumType\":\"COMPILATION\",\"storyType\":\"ABRIDGED\",\"totalTracks\":10,\"totalDurationMs\":9078934,\"allTracksNotExplicit\":true,\"allTracksPlayable\":true,\"previewURL\":\"http://previewurl.de/sample.mp3\",\"popularity\":80,\"label\":\"Some Fancy Label\",\"copyright\":\"Copyright owner 2\",\"assumedLanguage\":\"EN\"}]}",
+                "{\"total\":2,\"offset\":0,\"limit\":1,\"items\":[{\"id\":\"2847a676de8b\",\"name\":\"Super Album\",\"artist\":{\"id\":\"23129390abdc\",\"name\":\"Some Super Fancy Artist\",\"artistImage\":\"http://artist.com/image.png\",\"popularity\":90},\"releaseDate\":\"1992-08-03\",\"albumArtURLs\":{\"large\":\"http://albumart.de/image2_lg.png\",\"medium\":\"http://albumart.de/image2_md.png\",\"small\":\"http://albumart.de/image2_sm.png\"},\"albumType\":\"COMPILATION\",\"storyType\":\"ABRIDGED\",\"totalTracks\":10,\"totalDurationMs\":9078934,\"allTracksNotExplicit\":true,\"allTracksPlayable\":true,\"previewURL\":\"http://previewurl.de/sample.mp3\",\"popularity\":80,\"label\":\"Some Fancy Label\",\"copyright\":\"Copyright owner 2\",\"assumedLanguage\":\"EN\"}]}",
                 rsp.body!!.string()
             )
             assertEquals(StatusCode.OK.value(), rsp.code)
@@ -253,11 +253,11 @@ class IntegrationTest {
 
         client.newCall(
             Request.Builder()
-                .url("http://localhost:$serverPort/albums?limit=1&offset=1")
+                .url("http://localhost:$serverPort/api/albums?limit=1&offset=1")
                 .build()
         ).execute().use { rsp ->
             assertEquals(
-                "{\"total\":2,\"offset\":1,\"limit\":1,\"items\":[{\"id\":\"990023ace67a\",\"name\":\"Fancy Album\",\"artist\":{\"id\":\"23129390abdc\",\"name\":\"Some Super Fancy Artist\",\"artistImage\":\"http://artist.com/image.png\",\"popularity\":90},\"releaseDate\":\"2020-08-01\",\"albumArtUrl\":\"http://albumart.de/image1.png\",\"albumType\":\"ALBUM\",\"storyType\":\"UNABRIDGED\",\"totalTracks\":10,\"totalDurationMs\":9078934,\"allTracksNotExplicit\":true,\"allTracksPlayable\":true,\"previewURL\":\"http://previewurl.de/sample.mp3\",\"popularity\":60,\"label\":\"Some Fancy Label\",\"copyright\":\"Copyright owner 1\",\"assumedLanguage\":\"DE\"}]}",
+                "{\"total\":2,\"offset\":1,\"limit\":1,\"items\":[{\"id\":\"990023ace67a\",\"name\":\"Fancy Album\",\"artist\":{\"id\":\"23129390abdc\",\"name\":\"Some Super Fancy Artist\",\"artistImage\":\"http://artist.com/image.png\",\"popularity\":90},\"releaseDate\":\"2020-08-01\",\"albumArtURLs\":{\"large\":\"http://albumart.de/image1_lg.png\",\"medium\":\"http://albumart.de/image1_md.png\",\"small\":\"http://albumart.de/image1_sm.png\"},\"albumType\":\"ALBUM\",\"storyType\":\"UNABRIDGED\",\"totalTracks\":10,\"totalDurationMs\":9078934,\"allTracksNotExplicit\":true,\"allTracksPlayable\":true,\"previewURL\":\"http://previewurl.de/sample.mp3\",\"popularity\":60,\"label\":\"Some Fancy Label\",\"copyright\":\"Copyright owner 1\",\"assumedLanguage\":\"DE\"}]}",
                 rsp.body!!.string()
             )
             assertEquals(StatusCode.OK.value(), rsp.code)
@@ -265,7 +265,7 @@ class IntegrationTest {
 
         client.newCall(
             Request.Builder()
-                .url("http://localhost:$serverPort/albums?limit=${QueryBuilder.DEFAULT_ROW_LIMIT_PER_REQUEST + 1}")
+                .url("http://localhost:$serverPort/api/albums?limit=${QueryBuilder.DEFAULT_ROW_LIMIT_PER_REQUEST + 1}")
                 .build()
         ).execute().use { rsp ->
             assertTrue(
@@ -277,7 +277,7 @@ class IntegrationTest {
 
         client.newCall(
             Request.Builder()
-                .url("http://localhost:$serverPort/albums?offset=2")
+                .url("http://localhost:$serverPort/api/albums?offset=2")
                 .build()
         ).execute().use { rsp ->
             assertEquals("{\"total\":2,\"offset\":2,\"limit\":50,\"items\":[]}", rsp.body!!.string())
@@ -289,7 +289,7 @@ class IntegrationTest {
     fun shouldProvideCrawlStats(serverPort: Int) {
         client.newCall(
             Request.Builder()
-                .url("http://localhost:$serverPort/stats")
+                .url("http://localhost:$serverPort/api/stats")
                 .build()
         ).execute().use { rsp ->
             assertEquals(

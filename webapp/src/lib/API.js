@@ -1,6 +1,6 @@
 import axios from "axios"
 
-const PAGE_SIZE = 10
+const PAGE_SIZE = 5
 const API_PATH = "/api"
 
 const API = function () {
