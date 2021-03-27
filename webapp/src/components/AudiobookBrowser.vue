@@ -37,8 +37,9 @@
 </template>
 
 <script>
-import ItemList from '@/components/ItemList.vue'
-import AudiobookDetails from '@/components/AudiobookDetails.vue'
+import ItemList from "@/components/ItemList.vue"
+import AudiobookDetails from "@/components/AudiobookDetails.vue"
+import {updateProperties} from "@/lib/common"
 
 export default {
   name: "AudiobookBrowser",
@@ -57,12 +58,12 @@ export default {
     }
   },
   mounted: function () {
-    if (this.$route.params.id) {
-      this.showDetails(this.$route.params.id)
-    }
-
-    this.readParametersFromRoute()
     this.search()
+  },
+  watch: {
+    $route: function () {
+      this.updateFromRoute()
+    }
   },
   methods: {
     onKeyUp: function (e) {
@@ -79,7 +80,13 @@ export default {
       })
     },
     onItemSelected: function (id) {
-      this.showDetails(id)
+      this.$router.push({
+        name: "audiobooks",
+        params: {
+          id
+        },
+        query: this.$route.query
+      })
     },
     updateRoute: function () {
       this.$router.push({
@@ -91,35 +98,44 @@ export default {
         }
       })
     },
-    readParametersFromRoute: function () {
-      const q = this.$route.query
-      this.searchTerm = q.s || ""
-      this.unabridgedOnly = (q.unabridgedOnly || false) == "true"
-      this.currentPage = parseInt(q.currentPage) || 0
+    updateFromRoute: function () {
+      console.log("Updating from route...")
+      if (this.$route.params.id) {
+        this.showDetails(this.$route.params.id)
+      } else {
+        // In case user is using her/his browser's navigation and is going back we want to also
+        // hide the details modal
+        this.hideDetails()
+      }
 
-      console.log("Current Page: ", this.currentPage)
+      const q = this.$route.query
+      const newParams = {
+        "searchTerm": q.s || "",
+        "unabridgedOnly": (q.unabridgedOnly || false) == "true",
+        "currentPage": parseInt(q.currentPage) || 0
+      }
+
+      const changed = updateProperties(newParams, this)
+
+      // We need to prevent programmatically updating the route from triggering another search
+      if (changed) {
+        this.fetchData(this.currentPage)
+      }
     },
     showDetails: function (id) {
-      const formerQueryParams = this.$route.query
-
       this.$api.fetchSingleAudiobook(id).then((response) => {
-
-        this.$router.push({
-          name: "audiobooks",
-          params: {
-            id
-          }
-        })
-
         this.$refs.detailsComponent.show(response, () => {
           // Remove parameter after modal has been closed and
-          // restore query params
+          // keep query params
           this.$router.push({
             name: "audiobooks",
-            query: formerQueryParams
+            query: this.$route.query
           })
         })
       })
+    },
+    hideDetails: function () {
+      this.$refs.detailsComponent.hide()
     },
     onClickSearchBtn: function () {
       // Reset page before performing a fresh search

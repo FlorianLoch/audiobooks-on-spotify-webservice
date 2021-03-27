@@ -34,6 +34,9 @@ export default {
 
       this.details = details
       this.showModal = true
+    },
+    hide: function () {
+      this.showModal = false
     }
   }
 };

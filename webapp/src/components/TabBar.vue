@@ -28,15 +28,10 @@ export default {
     },
     activeTab: String
   },
-  // data: function () {
-  //   return {
-  //     activeTab: this.initialActiveTab
-  //   }
-  // },
   methods: {
     tabSelect: function (val) {
       if (val === this.activeTab) return
-      // this.activeTab = val
+      
       this.$emit("update:activeTab", val)
       this.$emit("tabSelect", val)
     }

@@ -7,28 +7,34 @@
           icon="magnify",
           v-model="searchTerm",
           type="search",
-          placeholder="Search authors for..."
-          expanded
+          placeholder="Search authors for...",
+          expanded,
           @keyup.native="onKeyUp"
         )
         p.control
           b-button.is-primary(@click="onClickSearchBtn") Go!
     .level
       h3 Found
-        strong {{ ` ${authorsFound} `}}
+        strong {{ ` ${authorsFound} ` }}
         | authors
-  ItemList(:items="items" :totalPages="totalPages" :currentPage="currentPage + 1" @pageChange="onPageChange")
+  ItemList(
+    :items="items",
+    :totalPages="totalPages",
+    :currentPage="currentPage + 1",
+    @pageChange="onPageChange"
+  )
     template(v-slot="item")
       .media-left
         figure.image.is-128x128
           img(:src="item.artistImage.medium")
       .media-content
-        p.title.is-4 {{item.name}}
-        p.subtitle {{item.popularity}}
+        p.title.is-4 {{ item.name }}
+        p.subtitle {{ item.popularity }}
 </template>
 
 <script>
-import ItemList from '@/components/ItemList.vue'
+import ItemList from "@/components/ItemList.vue"
+import { updateProperties } from "@/lib/common"
 
 export default {
   name: "AuthorBrowser",
@@ -45,8 +51,12 @@ export default {
     }
   },
   mounted: function () {
-    this.readParametersFromRoute()
     this.search()
+  },
+  watch: {
+    $route: function () {
+      this.updateFromRoute()
+    }
   },
   methods: {
     onKeyUp: function (e) {
@@ -67,12 +77,22 @@ export default {
         query: {
           s: this.searchTerm,
           currentPage: this.currentPage
-      }})
+        }
+      })
     },
-    readParametersFromRoute: function () {
+    updateFromRoute: function () {
       const q = this.$route.query
-      this.searchTerm = q.s || ""
-      this.currentPage = parseInt(q.currentPage) || 0
+      const newParams = {
+        "searchTerm": q.s || "",
+        "currentPage": parseInt(q.currentPage) || 0
+      }
+
+      const changed = updateProperties(newParams, this)
+
+      // We need to prevent programmatically updating the route from triggering another search
+      if (changed) {
+        this.fetchData(this.currentPage)
+      }
     },
     onClickSearchBtn: function () {
       // Reset page before performing a fresh search
