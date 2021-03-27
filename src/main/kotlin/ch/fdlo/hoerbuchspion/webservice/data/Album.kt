@@ -1,6 +1,5 @@
 package ch.fdlo.hoerbuchspion.webservice.data
 
-import com.fasterxml.jackson.annotation.JsonUnwrapped
 import javax.persistence.*
 
 @Entity(name = "Album")
@@ -29,45 +28,23 @@ private constructor() {  // We need a default constructor because of JPA
     @Enumerated(EnumType.STRING)
     val storyType: StoryType? = null
 
-    @Embedded // TODO: Actually, there is no point in embedding these. Just add them here.
-    @JsonUnwrapped
-    var albumDetails: AlbumDetails? = null
+    val totalTracks = 0
+    val totalDurationMs: Long = 0
+    val allTracksNotExplicit = true
+    val allTracksPlayable = true
+    val preview = "" // URL to preview clip
+    val popularity = 0
+    val label = ""
+    val copyright = ""
 
-    override fun equals(other: Any?): Boolean {
-        return if (other is Album) {
-            id == other.id
-        } else false
-    }
-
-    override fun hashCode(): Int {
-        return id.hashCode()
-    }
-
-    override fun toString(): String {
-        return "ALBUM: $name ($id), $releaseDate, $storyType"
-    }
+    @Enumerated(EnumType.STRING)
+    val assumedLanguage = Language.UNKNOWN
 
     enum class StoryType(private val str: String) {
         ABRIDGED("abridged"), UNABRIDGED("unabridged"), UNKNOWN("unknown");
 
         override fun toString(): String {
             return str
-        }
-
-        // TODO: Clean this up
-        companion object {
-            fun analyze(albumName: String): StoryType {
-                var s = albumName
-                s = s.toLowerCase()
-
-                // As the check below is a subset we need to check for the full sequence first
-                if (s.contains("unabridged") || s.contains("ungekürzt")) {
-                    return UNABRIDGED
-                }
-                return if (s.contains("abridged") || s.contains("gekürzt")) {
-                    ABRIDGED
-                } else UNKNOWN
-            }
         }
     }
 

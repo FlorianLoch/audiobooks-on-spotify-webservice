@@ -25,7 +25,7 @@ class QueryBuilder {
             limit: Long,
             searchTerm: String,
             unabridgedOnly: Boolean,
-            languages: Set<AlbumDetails.Language>
+            languages: Set<Language>
         ): PaginationWrapper<Album> {
             var criteria = buildSearchTermPredicate(album.name, searchTerm)
 
@@ -34,10 +34,10 @@ class QueryBuilder {
             }
 
             if (languages.isEmpty().not()) {
-                criteria = criteria.and(album.albumDetails.assumedLanguage.`in`(languages))
+                criteria = criteria.and(album.assumedLanguage.`in`(languages))
             }
 
-            return fetchRecordsFromRequest(em, album, criteria, album.albumDetails.popularity, offset, limit)
+            return fetchRecordsFromRequest(em, album, criteria, album.popularity, offset, limit)
         }
 
         fun fetchArtists(
@@ -48,7 +48,7 @@ class QueryBuilder {
         ): PaginationWrapper<Artist> {
             val criteria = buildSearchTermPredicate(artist.name, searchTerm)
 
-            return fetchRecordsFromRequest(em, artist, criteria, artist.artistDetails.popularity, offset, limit)
+            return fetchRecordsFromRequest(em, artist, criteria, artist.popularity, offset, limit)
         }
 
         private fun <T> fetchRecordsFromRequest(
@@ -74,22 +74,6 @@ class QueryBuilder {
 
         private fun buildSearchTermPredicate(nameField: StringPath, searchTerm: String): BooleanExpression {
             return nameField.likeIgnoreCase("%${searchTerm.trim()}%")
-        }
-
-        private fun toLanguageSet(stringSet: Set<String>): Set<AlbumDetails.Language> {
-            val langSet = mutableSetOf<AlbumDetails.Language>()
-
-            for (langStr in stringSet) {
-                val lang = AlbumDetails.Language.fromISO_639_1(langStr.toLowerCase())
-
-                if (lang == AlbumDetails.Language.UNKNOWN) {
-                    throw IllegalArgumentException("'$langStr' is not an ISO 639-1 identifier or does not denote a supported language.")
-                }
-
-                langSet.add(lang)
-            }
-
-            return langSet
         }
 
         fun fetchSingleAlbum(em: EntityManager, id: String): Album? {

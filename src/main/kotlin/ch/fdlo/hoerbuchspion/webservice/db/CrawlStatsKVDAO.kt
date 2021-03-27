@@ -3,7 +3,6 @@ package ch.fdlo.hoerbuchspion.webservice.db
 import ch.fdlo.hoerbuchspion.webservice.data.CrawlStatsKV
 import ch.fdlo.hoerbuchspion.webservice.data.QCrawlStatsKV
 import com.querydsl.jpa.impl.JPAQuery
-import io.jooby.Context
 import javax.persistence.EntityManager
 
 fun queryCrawlStats(em: EntityManager) : MutableMap<CrawlStatsKV.KVKey, String> {

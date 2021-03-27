@@ -128,7 +128,7 @@ class App : Kooby({
             `in` = ParameterIn.QUERY,
             required = false,
             schema = Schema(
-                implementation = AlbumDetails.Language::class
+                implementation = Language::class
             )
         )]
 )
@@ -139,9 +139,9 @@ fun getAlbums(ctx: Context): PaginationWrapper<Album> {
     val unabridgedOnly = ctx.query("unabridged_only").booleanValue(false)
     val languages = ctx.query("language").map {
         val langStr = it.value().toLowerCase()
-        val lang = AlbumDetails.Language.fromISO_639_1(langStr)
+        val lang = Language.fromISO_639_1(langStr)
 
-        if (lang == AlbumDetails.Language.UNKNOWN) {
+        if (lang == Language.UNKNOWN) {
             throw IllegalArgumentException("'$langStr' is not an ISO 639-1 identifier or does not denote a supported language.")
         }
 

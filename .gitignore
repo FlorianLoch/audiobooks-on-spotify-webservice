@@ -2,6 +2,10 @@
 target/
 tmp/
 *.log
+.settings/
+.project
+.classpath
+.DS_Store
 
 # IntelliJ specific stuff
 out/
