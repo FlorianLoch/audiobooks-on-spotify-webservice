@@ -5,13 +5,13 @@
       .card
         .card-image
           figure.image.is-1by1
-            img(:src="details.albumArtUrl")
+            img(:src="details.albumArt.large")
           .card-content
             p.title.is-4 {{details.name}}
             .media
               .media-left
                 figure.image.is-64x64
-                  img(:src="details.artist.artistImage")
+                  img(:src="details.artist.artistImage.small")
               .media-content
                 p.title.is-5 {{details.artist.name}}
             .content

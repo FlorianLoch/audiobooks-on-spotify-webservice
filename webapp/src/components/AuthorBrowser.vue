@@ -21,7 +21,7 @@
     template(v-slot="item")
       .media-left
         figure.image.is-128x128
-          img(:src="item.artistImage")
+          img(:src="item.artistImage.medium")
       .media-content
         p.title.is-4 {{item.name}}
         p.subtitle {{item.popularity}}

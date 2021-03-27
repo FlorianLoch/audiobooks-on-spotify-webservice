@@ -15,8 +15,13 @@ private constructor() {  // We need a default constructor because of JPA
     val artist: Artist? = null
     val releaseDate: String? = null
 
-    @Embedded // effectively a OneToOne relation
-    val albumArtURLs: AlbumArtURLs? = null
+    @Embedded
+    @AttributeOverrides(
+        AttributeOverride(name = "large", column = Column(name = "albumArtLarge")),
+        AttributeOverride(name = "medium", column = Column(name = "albumArtMedium")),
+        AttributeOverride(name = "small", column = Column(name = "albumArtSmall"))
+    )
+    val albumArt: ImageURLs? = null
 
     @Enumerated(EnumType.STRING)
     val albumType: AlbumType? = null
@@ -24,7 +29,7 @@ private constructor() {  // We need a default constructor because of JPA
     @Enumerated(EnumType.STRING)
     val storyType: StoryType? = null
 
-    @Embedded // effectively a OneToOne relation
+    @Embedded // TODO: Actually, there is no point in embedding these. Just add them here.
     @JsonUnwrapped
     var albumDetails: AlbumDetails? = null
 

@@ -11,7 +11,7 @@ private constructor() { // We need a default constructor because of JPA
     val totalDurationMs: Long = 0
     val allTracksNotExplicit = true
     val allTracksPlayable = true
-    val previewURL = ""
+    val preview = "" // URL to preview clip
     // TODO: Check why 'val' and 'var' are mixed
     var popularity = 0
     var label = ""

@@ -14,7 +14,7 @@ private constructor() {  // We need a default constructor because of JPA
     val id: String? = null
     val name: String? = null
 
-    @Embedded // effectively a OneToOne relation
+    @Embedded // TODO: It's there same here - no point in embedding, just add them in-place.
     @JsonUnwrapped
     var artistDetails: ArtistDetails? = null
 
