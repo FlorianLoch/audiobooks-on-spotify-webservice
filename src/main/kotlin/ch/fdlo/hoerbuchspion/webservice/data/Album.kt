@@ -10,8 +10,8 @@ private constructor() {  // We need a default constructor because of JPA
     val id: String? = null
     val name: String? = null
 
-    @ManyToOne(cascade = [CascadeType.MERGE, CascadeType.PERSIST])
-    val artist: Artist? = null
+    @ManyToMany(cascade = [CascadeType.MERGE])
+    val artists: List<Artist>? = null
     val releaseDate: String? = null
 
     @Embedded

@@ -33,7 +33,7 @@
           img(:src="item.albumArt.medium")
       .media-content
         p.title.is-4 {{ item.name }}
-        p.subtitle {{ item.artist.name }}
+        p.subtitle {{ item.artists[0].name }}
 </template>
 
 <script>

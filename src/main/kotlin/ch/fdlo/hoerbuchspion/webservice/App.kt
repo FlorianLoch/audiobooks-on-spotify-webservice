@@ -74,7 +74,7 @@ class App : Kooby({
             content = [Content(
                 mediaType = "application/json",
                 examples = [ExampleObject(
-                    value = "{\"total\":1,\"offset\":0,\"limit\":50,\"items\":[{\"id\":\"990023ace67a\",\"name\":\"Fancy Album\",\"artist\":{\"id\":\"23129390abdc\",\"name\":\"Some Super Fancy Artist\",\"artistImage\":\"http://artist.com/image.png\",\"popularity\":90},\"releaseDate\":\"2020-08-01\",\"albumArtUrl\":\"http://albumart.de/image1.png\",\"albumType\":\"ALBUM\",\"storyType\":\"UNABRIDGED\",\"totalTracks\":10,\"totalDurationMs\":9078934,\"allTracksNotExplicit\":true,\"allTracksPlayable\":true,\"previewURL\":\"http://previewurl.de/sample.mp3\",\"popularity\":80,\"label\":\"Some Fancy Label\",\"copyright\":\"Copyright owner 1\",\"assumedLanguage\":\"DE\"}]}"
+                    value = "{\"total\":2,\"offset\":0,\"limit\":50,\"items\":[{\"id\":\"2847a676de8b\",\"name\":\"Super Album\",\"artists\":[{\"id\":\"23129390abdc\",\"name\":\"Some Super Fancy Artist\",\"artistImage\":{\"large\":\"http://artist1.com/image_lg.png\",\"medium\":\"http://artist1.com/image_md.png\",\"small\":\"http://artist1.com/image_sm.png\"},\"popularity\":90}],\"releaseDate\":\"1992-08-03\",\"albumArt\":{\"large\":\"http://albumart.de/image2_lg.png\",\"medium\":\"http://albumart.de/image2_md.png\",\"small\":\"http://albumart.de/image2_sm.png\"},\"albumType\":\"COMPILATION\",\"storyType\":\"ABRIDGED\",\"totalTracks\":10,\"totalDurationMs\":9078934,\"allTracksNotExplicit\":true,\"allTracksPlayable\":true,\"preview\":\"http://previewurl.de/sample.mp3\",\"popularity\":80,\"label\":\"Some Fancy Label\",\"copyright\":\"Copyright owner 2\",\"assumedLanguage\":\"EN\"},{\"id\":\"990023ace67a\",\"name\":\"Fancy Album\",\"artists\":[{\"id\":\"23129390abdc\",\"name\":\"Some Super Fancy Artist\",\"artistImage\":{\"large\":\"http://artist1.com/image_lg.png\",\"medium\":\"http://artist1.com/image_md.png\",\"small\":\"http://artist1.com/image_sm.png\"},\"popularity\":90},{\"id\":\"93hdqcda39ds\",\"name\":\"Another Super Fancy Artist\",\"artistImage\":{\"large\":\"http://artist2.com/image_lg.png\",\"medium\":\"http://artist2.com/image_md.png\",\"small\":\"http://artist2.com/image_sm.png\"},\"popularity\":93}],\"releaseDate\":\"2020-08-01\",\"albumArt\":{\"large\":\"http://albumart.de/image1_lg.png\",\"medium\":\"http://albumart.de/image1_md.png\",\"small\":\"http://albumart.de/image1_sm.png\"},\"albumType\":\"ALBUM\",\"storyType\":\"UNABRIDGED\",\"totalTracks\":10,\"totalDurationMs\":9078934,\"allTracksNotExplicit\":true,\"allTracksPlayable\":true,\"preview\":\"http://previewurl.de/sample.mp3\",\"popularity\":60,\"label\":\"Some Fancy Label\",\"copyright\":\"Copyright owner 1\",\"assumedLanguage\":\"DE\"}]}"
                 )]
             )]
         )],
@@ -168,6 +168,15 @@ fun getAlbums(ctx: Context): PaginationWrapper<Album> {
                             "}"
                 )]
             )]
+        ),
+        ApiResponse(
+            responseCode = "default",
+            content = [Content(
+                mediaType = "application/json",
+                examples = [ExampleObject(
+                    value = "{\"id\":\"2847a676de8b\",\"name\":\"Super Album\",\"artists\":[{\"id\":\"23129390abdc\",\"name\":\"Some Super Fancy Artist\",\"artistImage\":{\"large\":\"http://artist1.com/image_lg.png\",\"medium\":\"http://artist1.com/image_md.png\",\"small\":\"http://artist1.com/image_sm.png\"},\"popularity\":90}],\"releaseDate\":\"1992-08-03\",\"albumArt\":{\"large\":\"http://albumart.de/image2_lg.png\",\"medium\":\"http://albumart.de/image2_md.png\",\"small\":\"http://albumart.de/image2_sm.png\"},\"albumType\":\"COMPILATION\",\"storyType\":\"ABRIDGED\",\"totalTracks\":10,\"totalDurationMs\":9078934,\"allTracksNotExplicit\":true,\"allTracksPlayable\":true,\"preview\":\"http://previewurl.de/sample.mp3\",\"popularity\":80,\"label\":\"Some Fancy Label\",\"copyright\":\"Copyright owner 2\",\"assumedLanguage\":\"EN\"}"
+                )]
+            )]
         )],
     parameters = [
         Parameter(
@@ -202,7 +211,7 @@ fun getSingleAlbum(ctx: Context): Album {
             content = [Content(
                 mediaType = "application/json",
                 examples = [ExampleObject(
-                    value = "{\"total\":1,\"offset\":0,\"limit\":50,\"items\":[{\"id\":\"23129390abdc\",\"name\":\"Some Super Fancy Artist\",\"artistImage\":\"http://artist.com/image.png\",\"popularity\":90}]}"
+                    value = "{\"total\":2,\"offset\":0,\"limit\":50,\"items\":[{\"id\":\"93hdqcda39ds\",\"name\":\"Another Super Fancy Artist\",\"artistImage\":{\"large\":\"http://artist2.com/image_lg.png\",\"medium\":\"http://artist2.com/image_md.png\",\"small\":\"http://artist2.com/image_sm.png\"},\"popularity\":93},{\"id\":\"23129390abdc\",\"name\":\"Some Super Fancy Artist\",\"artistImage\":{\"large\":\"http://artist1.com/image_lg.png\",\"medium\":\"http://artist1.com/image_md.png\",\"small\":\"http://artist1.com/image_sm.png\"},\"popularity\":90}]}"
                 )]
             )]
         )],
@@ -264,6 +273,15 @@ fun getArtists(ctx: Context): PaginationWrapper<Artist> {
                             "  \"status\": 400,\n" +
                             "  \"reason\": \"Some details on the error.\"\n" +
                             "}"
+                )]
+            )]
+        ),
+        ApiResponse(
+            responseCode = "default",
+            content = [Content(
+                mediaType = "application/json",
+                examples = [ExampleObject(
+                    value = "{\"id\":\"93hdqcda39ds\",\"name\":\"Another Super Fancy Artist\",\"artistImage\":{\"large\":\"http://artist2.com/image_lg.png\",\"medium\":\"http://artist2.com/image_md.png\",\"small\":\"http://artist2.com/image_sm.png\"},\"popularity\":93},{\"id\":\"23129390abdc\",\"name\":\"Some Super Fancy Artist\",\"artistImage\":{\"large\":\"http://artist1.com/image_lg.png\",\"medium\":\"http://artist1.com/image_md.png\",\"small\":\"http://artist1.com/image_sm.png\"},\"popularity\":90}"
                 )]
             )]
         )],

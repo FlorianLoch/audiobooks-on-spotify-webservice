@@ -1,6 +1,6 @@
 <template lang="pug">
 .audiobookDetails
-  b-modal(v-model="showModal" width="640px" scroll="keep" @close="onClose")
+  b-modal(v-model="showModal" width="500px" scroll="keep" @close="onClose")
     div(v-if="showModal && details")
       .card
         .card-image
@@ -8,12 +8,12 @@
             img(:src="details.albumArt.large")
           .card-content
             p.title.is-4 {{details.name}}
-            .media
+            .media(v-for="artist in details.artists")
               .media-left
                 figure.image.is-64x64
-                  img(:src="details.artist.artistImage.small")
+                  img(:src="artist.artistImage.small")
               .media-content
-                p.title.is-5 {{details.artist.name}}
+                p.title.is-5 {{artist.name}}
             .content
               p Add some details...
 </template>
