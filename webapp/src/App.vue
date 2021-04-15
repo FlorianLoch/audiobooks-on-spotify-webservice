@@ -41,6 +41,11 @@ export default {
       uiVersion: process.env.PACKAGE_VERSION
     };
   },
+  watch: {
+    $route: function () {
+      this.activeTab = this.$route.meta.tabValue
+    }
+  },
   created: function () {
     this.activeTab = this.$route.meta.tabValue
   },

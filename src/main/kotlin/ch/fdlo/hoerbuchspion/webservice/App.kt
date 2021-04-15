@@ -130,6 +130,16 @@ class App : Kooby({
             schema = Schema(
                 implementation = Language::class
             )
+        ),
+        Parameter(
+            name = "artist_id",
+            description = "Only provide albums/audiobooks by the given artist (matched by the artist's ID).",
+            `in` = ParameterIn.QUERY,
+            required = false,
+            schema = Schema(
+                defaultValue = "",
+                type = "string"
+            )
         )]
 )
 fun getAlbums(ctx: Context): PaginationWrapper<Album> {
@@ -147,9 +157,10 @@ fun getAlbums(ctx: Context): PaginationWrapper<Album> {
 
         lang
     }.toSet()
+    val artistID = ctx.query("artist_id").value("")
     val em = ctx.require(EntityManager::class.java)
 
-    return QueryBuilder.fetchAlbums(em, offset, limit, searchTerm, unabridgedOnly, languages)
+    return QueryBuilder.fetchAlbums(em, offset, limit, searchTerm, unabridgedOnly, languages, artistID)
 }
 
 @Operation(

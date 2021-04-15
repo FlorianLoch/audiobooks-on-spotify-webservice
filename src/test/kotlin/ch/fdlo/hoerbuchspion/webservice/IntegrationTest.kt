@@ -301,4 +301,19 @@ class IntegrationTest {
             assertEquals(StatusCode.OK.value(), rsp.code)
         }
     }
+
+    @Test
+    fun shouldBeCapableOfFilteringByArtistID(serverPort: Int) {
+        client.newCall(
+            Request.Builder()
+                .url("http://localhost:$serverPort/api/albums?artist_id=23129390abdc")
+                .build()
+        ).execute().use { rsp ->
+            assertEquals(
+                "{\"total\":2,\"offset\":0,\"limit\":50,\"items\":[{\"id\":\"2847a676de8b\",\"name\":\"Super Album\",\"artists\":[{\"id\":\"23129390abdc\",\"name\":\"Some Super Fancy Artist\",\"artistImage\":{\"large\":\"http://artist1.com/image_lg.png\",\"medium\":\"http://artist1.com/image_md.png\",\"small\":\"http://artist1.com/image_sm.png\"},\"popularity\":90}],\"releaseDate\":\"1992-08-03\",\"albumArt\":{\"large\":\"http://albumart.de/image2_lg.png\",\"medium\":\"http://albumart.de/image2_md.png\",\"small\":\"http://albumart.de/image2_sm.png\"},\"albumType\":\"COMPILATION\",\"storyType\":\"ABRIDGED\",\"totalTracks\":10,\"totalDurationMs\":9078934,\"allTracksNotExplicit\":true,\"allTracksPlayable\":true,\"preview\":\"http://previewurl.de/sample.mp3\",\"popularity\":80,\"label\":\"Some Fancy Label\",\"copyright\":\"Copyright owner 2\",\"assumedLanguage\":\"EN\"},{\"id\":\"990023ace67a\",\"name\":\"Fancy Album\",\"artists\":[{\"id\":\"23129390abdc\",\"name\":\"Some Super Fancy Artist\",\"artistImage\":{\"large\":\"http://artist1.com/image_lg.png\",\"medium\":\"http://artist1.com/image_md.png\",\"small\":\"http://artist1.com/image_sm.png\"},\"popularity\":90},{\"id\":\"93hdqcda39ds\",\"name\":\"Another Super Fancy Artist\",\"artistImage\":{\"large\":\"http://artist2.com/image_lg.png\",\"medium\":\"http://artist2.com/image_md.png\",\"small\":\"http://artist2.com/image_sm.png\"},\"popularity\":93}],\"releaseDate\":\"2020-08-01\",\"albumArt\":{\"large\":\"http://albumart.de/image1_lg.png\",\"medium\":\"http://albumart.de/image1_md.png\",\"small\":\"http://albumart.de/image1_sm.png\"},\"albumType\":\"ALBUM\",\"storyType\":\"UNABRIDGED\",\"totalTracks\":10,\"totalDurationMs\":9078934,\"allTracksNotExplicit\":true,\"allTracksPlayable\":true,\"preview\":\"http://previewurl.de/sample.mp3\",\"popularity\":60,\"label\":\"Some Fancy Label\",\"copyright\":\"Copyright owner 1\",\"assumedLanguage\":\"DE\"}]}",
+                rsp.body!!.string()
+            )
+            assertEquals(StatusCode.OK.value(), rsp.code)
+        }
+    }
 }

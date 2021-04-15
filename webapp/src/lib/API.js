@@ -38,10 +38,24 @@ const API = function () {
   }
 
   this.fetchAudiobooks = (searchTerm, unabridgedOnly, page) => {
-    return fetch("albums", {
-      s: searchTerm,
+    const regex = /(?:artistID:"([^"]*)")?\s*(.*)/;
+
+    const searchParams = {
       unabridged_only: unabridgedOnly,
-    }, page)
+    }
+
+    const match = searchTerm.match(regex)
+    console.log(match)
+
+    const artistID = match[1]
+    searchTerm = match[2]
+    if (artistID) { // check whether an artistID is given
+      searchParams.artist_id = artistID
+    }
+
+    searchParams.s = searchTerm
+
+    return fetch("albums", searchParams, page)
   }
 
   this.fetchSingleAudiobook = (id) => {

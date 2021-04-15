@@ -25,7 +25,8 @@ class QueryBuilder {
             limit: Long,
             searchTerm: String,
             unabridgedOnly: Boolean,
-            languages: Set<Language>
+            languages: Set<Language>,
+            artistID: String
         ): PaginationWrapper<Album> {
             var criteria = buildSearchTermPredicate(album.name, searchTerm)
 
@@ -33,8 +34,12 @@ class QueryBuilder {
                 criteria = criteria.and(album.storyType.eq(Album.StoryType.UNABRIDGED))
             }
 
-            if (languages.isEmpty().not()) {
+            if (languages.isNotEmpty()) {
                 criteria = criteria.and(album.assumedLanguage.`in`(languages))
+            }
+
+            if (artistID.isNotEmpty()) {
+                criteria = criteria.and(album.artists.contains(Artist(artistID)))
             }
 
             return fetchRecordsFromRequest(em, album, criteria, album.popularity, offset, limit)

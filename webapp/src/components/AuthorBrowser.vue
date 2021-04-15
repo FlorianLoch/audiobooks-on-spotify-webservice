@@ -21,7 +21,8 @@
     :items="items",
     :totalPages="totalPages",
     :currentPage="currentPage + 1",
-    @pageChange="onPageChange"
+    @pageChange="onPageChange",
+    @itemSelected="onItemSelected"
   )
     template(v-slot="item")
       .media-left
@@ -70,6 +71,14 @@ export default {
       this.fetchData(page).then(() => {
         this.currentPage = page
         this.updateRoute()
+      })
+    },
+    onItemSelected: function (id) {
+      this.$router.push({
+        name: "audiobooks",
+        query: {
+          s: `artistID:"${id}"`
+        }
       })
     },
     updateRoute: function () {
